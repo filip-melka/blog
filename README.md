@@ -1,52 +1,50 @@
-# My Blog
+# 📝 My Blog
 
----
+Welcome to my personal blog!
 
-# Astro Starter Kit: Basics
+> This is just a fun little side project — mostly for my own use, experimentation, and learning.
 
-```sh
-npm create astro@latest -- --template basics
+## ⚒️ Tech Stack
+
+This project is built with a mix of tools and frameworks I enjoy working with:
+
+- **Astro** – Lightning-fast static site generation
+- **Tailwind CSS** – Utility-first styling
+- **SolidJS** – Reactive UI components
+- **Svelte** – Because why not have both?
+- **Supabase** – Backend-as-a-service
+- **GitHub Actions** – CI/CD automation
+
+## 🚧 Development Workflow
+
+Even though it's a solo project, I'm treating it as a chance to experiment with better practices and a more structured workflow.
+
+### 📌 Git Flow
+
+1. Work locally on the `develop` branch
+2. `git push origin develop`
+3. Open a pull request
+4. **Squash & merge** into the `master` branch
+5. Checkout `master` locally and pull the changes
+6. Merge updated `master` back into `develop`
+
+### 🔒 Branch Protection
+
+The `master` branch is protected with a **"Requires a pull request"** rule, ensuring all changes go through a PR — even if it's just me reviewing my own code.
+
+### ✅ Commit Message Convention
+
+I'm following the [Conventional Commits](https://www.freecodecamp.org/news/how-to-write-better-git-commit-messages/) standard:
+
+```
+<type>: <description>
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
-
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-![just-the-basics](https://github.com/withastro/astro/assets/2244813/a0a5533c-a856-4198-8470-2d67b1d7c554)
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src/
-│   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
-
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+| Type     | Description                    |
+| -------- | ------------------------------ |
+| feat     | A new feature                  |
+| fix      | A bug fix                      |
+| refactor | Refactored code                |
+| docs     | Updates to documentation       |
+| test     | Adding or updating tests       |
+| content  | Adding or updating MDX content |

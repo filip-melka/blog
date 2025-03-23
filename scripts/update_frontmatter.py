@@ -17,7 +17,7 @@ def get_files_by_status(status_code):
         return [
             line.split("\t")[1]
             for line in lines
-            if line.startswith(status_code) and line.endswith(".md") and line.split("\t")[1].startswith(TARGET_DIR)
+            if line.startswith(status_code) and line.endswith(".mdx") and line.split("\t")[1].startswith(TARGET_DIR)
         ]
     except subprocess.CalledProcessError:
         print("Probably first commit – fallback to git ls-files")
