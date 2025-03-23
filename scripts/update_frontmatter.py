@@ -37,6 +37,8 @@ def update_frontmatter(file_path, frontmatter_key, date_value):
 
         post.metadata[frontmatter_key] = date_value
 
+        print("File updated:",file_path, frontmatter_key, date_value)
+
         frontmatter.dump(post, file_path)
     except Exception as e:
         print(f"Error updating {file_path}: {e}")
