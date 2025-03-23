@@ -5,7 +5,7 @@ on:
     paths:
       - '**/*.mdx'
     branches:
-      - master
+      - develop
 
 jobs:
   update-frontmatter:
