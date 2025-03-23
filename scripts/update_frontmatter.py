@@ -44,9 +44,9 @@ def update_frontmatter(file_path, frontmatter_key, date_value):
         print(f"Error updating {file_path}: {e}")
 
 for new_file in new_files:
-    if new_file.endswith('.md'):
+    if new_file.endswith('.mdx'):
         update_frontmatter(new_file, 'pubDate', today_date)
 
 for modified_file in modified_files:
-    if modified_file.endswith('.md'):
+    if modified_file.endswith('.mdx'):
         update_frontmatter(modified_file, 'updatedDate', today_date)
