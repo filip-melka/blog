@@ -3,7 +3,7 @@ import os
 from datetime import datetime
 import subprocess
 
-today_date = datetime.today().strftime('%Y-%m-%d')
+today_date = datetime.today().date()
 
 TARGET_DIR = "src/blog"
 
