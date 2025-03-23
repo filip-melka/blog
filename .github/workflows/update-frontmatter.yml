@@ -1,0 +1,35 @@
+name: Update Frontmatter on Push
+
+on:
+  push:
+    paths:
+      - '**/*.mdx'
+    branches:
+      - master
+
+jobs:
+  update-frontmatter:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+
+      - name: Set up Python environment
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install python-frontmatter
+
+      - name: Add "publish" frontmatter to new files and update "lastUpdate" for modified files
+        run: python scripts/update_frontmatter.py
+
+      - name: Add and commit
+        uses: EndBug/add-and-commit@v9
+        with:
+          default_author: github_actions
+          message: 'Updated post dates'

@@ -1,0 +1,32 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+@theme {
+	--color-bg: white;
+	--color-text: rgb(43, 43, 43);
+	--color-code: #282a36;
+	--color-action-primary: #f59f00;
+	--color-action-secondary: #bb7a01;
+	--color-quiz-option: white;
+}
+
+@layer base {
+	[data-theme='dark'] {
+		--color-bg: #17181c;
+		--color-text: #efefef;
+		--color-quiz-option: gray;
+	}
+
+	code:not(pre code) {
+		@apply bg-text/10 mx-1 rounded px-1 py-0.5 align-middle text-sm;
+	}
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+main {
+	@apply min-h-[calc(100vh-10rem)];
+}

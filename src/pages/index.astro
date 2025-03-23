@@ -1,0 +1,27 @@
+---
+import { getCollection } from 'astro:content'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import BlogPostItem from '../components/solid/BlogPostItem'
+
+const allPosts = await getCollection('blog')
+---
+
+<BaseLayout pageTitle="Blog">
+	<main class="mx-auto px-4 py-8 pt-4 pb-32 sm:w-[65vw] sm:pt-8 lg:w-[650px]">
+		<h2 class="mb-5 text-2xl font-bold sm:mb-8 sm:text-3xl">Stories</h2>
+		<ul>
+			{
+				allPosts
+					.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+					.map((post) => (
+						<BlogPostItem
+							url={import.meta.env.BASE_URL + '/posts/' + post.id}
+							title={post.data.title}
+							description={post.data.description}
+							date={post.data.pubDate}
+						/>
+					))
+			}
+		</ul>
+	</main>
+</BaseLayout>

@@ -1,0 +1,43 @@
+@import 'tailwindcss';
+
+.katex-display {
+	@apply my-12 text-sm sm:text-lg;
+}
+
+article {
+	@apply text-sm leading-7 sm:text-base;
+}
+
+article img:not(figure img) {
+	@apply mx-auto w-full sm:max-w-10/12;
+}
+
+article h1 {
+	@apply mb-8 text-2xl font-semibold sm:text-4xl;
+}
+
+article h2 {
+	@apply mt-8 mb-4 text-xl font-medium sm:text-3xl;
+}
+
+article h3 {
+	@apply mt-6 mb-2 text-lg font-medium sm:text-2xl;
+}
+
+article p:not(.post-block p) {
+	@apply mb-4;
+}
+
+article ul:not(.quiz ul) {
+	@apply mb-4 list-outside list-disc pl-8;
+}
+
+article ol {
+	@apply mb-4 list-outside list-decimal pl-8;
+}
+
+@layer components {
+	.post-block {
+		@apply my-8;
+	}
+}

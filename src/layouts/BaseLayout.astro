@@ -1,0 +1,40 @@
+---
+import Footer from '../components/Footer.astro'
+import Navbar from '../components/Navbar.astro'
+import '../styles/global.css'
+const { pageTitle, includeLatex = false } = Astro.props
+---
+
+<html lang="en" data-theme="light">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/blog/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{pageTitle}</title>
+		{
+			includeLatex && (
+				<link
+					rel="stylesheet"
+					href="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.css"
+				/>
+			)
+		}
+		<script is:inline>
+			const theme = localStorage.getItem('theme')
+
+			if (
+				theme === 'dark' ||
+				(theme === null && !theme && window.matchMedia('(prefers-color-scheme: dark)').matches)
+			) {
+				localStorage.setItem('theme', 'dark')
+				document.documentElement.setAttribute('data-theme', 'dark')
+			}
+		</script>
+	</head>
+	<body class="bg-bg text-text">
+		<Navbar />
+		<slot />
+		<Footer />
+	</body>
+</html>
