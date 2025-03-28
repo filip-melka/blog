@@ -5,7 +5,19 @@
 }
 
 article {
-	@apply text-sm leading-7 sm:text-base;
+	@apply text-sm leading-8 sm:text-base;
+}
+
+article a {
+	@apply underline underline-offset-4;
+}
+
+article pre {
+	@apply pb-1;
+}
+
+article pre code {
+	@apply text-xs sm:text-sm;
 }
 
 article img:not(figure img) {
