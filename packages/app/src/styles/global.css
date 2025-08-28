@@ -1,0 +1,10 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-bg: white;
+  --color-text: rgb(43, 43, 43);
+  --color-note: rgb(42, 81, 240);
+  --color-warning: rgb(153, 144, 50);
+  --color-error: rgb(185, 56, 62);
+  --color-codeblock: rgb(40, 42, 54);
+}
