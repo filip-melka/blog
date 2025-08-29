@@ -1,6 +1,8 @@
 @import 'tailwindcss';
 @source "../../../../node_modules/@blog/ui-library";
 
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
 @theme {
   --color-bg: white;
   --color-text: rgb(43, 43, 43);
@@ -8,4 +10,11 @@
   --color-warning: rgb(153, 144, 50);
   --color-error: rgb(185, 56, 62);
   --color-codeblock: rgb(40, 42, 54);
+}
+
+@layer base {
+  [data-theme='dark'] {
+    --color-bg: #17181c;
+    --color-text: #efefef;
+  }
 }
