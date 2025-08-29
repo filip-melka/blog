@@ -6,6 +6,7 @@
   "scripts": {
     "astro": "npm run dev --workspace @blog/app",
     "storybook": "npm run storybook --workspace @blog/ui-library",
+    "build-ui": "npm run build --workspace @blog/ui-library",
     "format": "npx prettier . --write"
   },
   "keywords": [],
