@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
 import CodeBlock from '.'
+import maxWidth from '../../decorators/max-width'
 
 const meta = {
   component: CodeBlock,
@@ -11,42 +12,22 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Primary: Story = {
+  decorators: [maxWidth],
   args: {
-    language: 'js',
+    language: 'python',
     children: (
       <>
         {/* prettier-ignore */}
-        <pre>
-  <code>
-    <span className="line">
-      <span style={{ color: "#FF79C6" }}>const</span>
-      <span style={{ color: "#F8F8F2" }}> myVar </span>
-      <span style={{ color: "#FF79C6" }}>=</span>
-      <span style={{ color: "#BD93F9" }}> 5</span>
-    </span>
-    {"\n"}
-    <span className="line"></span>
-    {"\n"}
-    <span className="line">
-      <span style={{ color: "#FF79C6" }}>function</span>
-      <span style={{ color: "#50FA7B" }}> handleClick</span>
-      <span style={{ color: "#F8F8F2" }}>() &#123;</span>
-    </span>
-    {"\n"}
-    <span className="line">
-      <span style={{ color: "#F8F8F2" }}>	console.</span>
-      <span style={{ color: "#50FA7B" }}>log</span>
-      <span style={{ color: "#F8F8F2" }}>(</span>
-      <span style={{ color: "#E9F284" }}>'</span>
-      <span style={{ color: "#F1FA8C" }}>Hello World</span>
-      <span style={{ color: "#E9F284" }}>'</span>
-      <span style={{ color: "#F8F8F2" }}>)</span>
-    </span>
-    {"\n"}
-    <span className="line">
-      <span style={{ color: "#F8F8F2" }}>&#125;</span>
-    </span>
-  </code>
+        <pre style={{overflowX: 'auto'}} dangerouslySetInnerHTML={{__html: `<code><span class="line"><span style="color:#FF79C6">from</span><span style="color:#F8F8F2"> nltk.tokenize </span><span style="color:#FF79C6">import</span><span style="color:#F8F8F2"> word_tokenize</span></span>
+<span class="line"><span style="color:#FF79C6">import</span><span style="color:#F8F8F2"> string</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F8F8F2">document </span><span style="color:#FF79C6">=</span><span style="color:#F8F8F2"> documents[</span><span style="color:#BD93F9">0</span><span style="color:#F8F8F2">] </span><span style="color:#6272A4"># "The cat is sleeping on the couch."</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6272A4"># Tokenization</span></span>
+<span class="line"><span style="color:#F8F8F2">words </span><span style="color:#FF79C6">=</span><span style="color:#F8F8F2"> word_tokenize(document)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6272A4"># Lowercasing and removing punctuation</span></span>
+<span class="line"><span style="color:#F8F8F2">preprocessed_words </span><span style="color:#FF79C6">=</span><span style="color:#F8F8F2"> [word.lower() </span><span style="color:#FF79C6">for</span><span style="color:#F8F8F2"> word </span><span style="color:#FF79C6">in</span><span style="color:#F8F8F2"> words </span><span style="color:#FF79C6">if</span><span style="color:#F8F8F2"> word </span><span style="color:#FF79C6">not</span><span style="color:#FF79C6"> in</span><span style="color:#F8F8F2"> string.punctuation]</span></span></code>`}}>
 </pre>
       </>
     ),

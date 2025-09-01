@@ -1,5 +1,6 @@
 import type { Preview } from '@storybook/react-vite'
 import '../../app/src/styles/global.css'
+import prose from './decorators/prose'
 
 const preview: Preview = {
   parameters: {
@@ -10,6 +11,7 @@ const preview: Preview = {
       },
     },
   },
+  decorators: [prose],
 }
 
 export default preview

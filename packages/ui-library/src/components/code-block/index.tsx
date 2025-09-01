@@ -30,20 +30,20 @@ function CodeBlock({ language, children }: CodeBlockProps) {
 
   return (
     <div
-      className="not-prose bg-codeblock relative w-full rounded-lg px-6 py-5"
+      className="not-prose bg-codeblock relative w-full rounded-lg px-6 py-5 text-sm"
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
       <div className="absolute top-2 right-2">
         {isHovering ? (
           <button
-            className="flex h-9 w-9 items-center justify-center rounded border border-gray-300/20 bg-gray-200/10 text-white/70 transition-colors duration-200 hover:cursor-pointer hover:bg-gray-200/0"
+            className="flex h-8 w-8 items-center justify-center rounded border border-gray-300/20 bg-gray-200/10 text-white/70 transition-colors duration-200 hover:cursor-pointer hover:bg-gray-200/0"
             onClick={copyToClipboard}
           >
             {isCopied ? <ClipboardCheck size={20} /> : <Clipboard size={20} />}
           </button>
         ) : (
-          <span className="pr-2 text-sm text-white/80">{language}</span>
+          <span className="pr-2 text-xs text-white/70">{language}</span>
         )}
       </div>
 
