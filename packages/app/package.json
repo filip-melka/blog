@@ -9,6 +9,7 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/mdx": "^4.3.4",
     "@astrojs/react": "^4.3.0",
     "@blog/ui-library": "^0.0.1",
     "@lucide/astro": "^0.542.0",
@@ -19,5 +20,8 @@
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "tailwindcss": "^4.1.12"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.16"
   }
 }

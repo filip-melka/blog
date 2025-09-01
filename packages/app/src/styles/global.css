@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@plugin "@tailwindcss/typography";
 @source "../../../../node_modules/@blog/ui-library";
 
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
@@ -17,4 +18,8 @@
     --color-bg: #17181c;
     --color-text: #efefef;
   }
+}
+
+html {
+  scroll-behavior: smooth;
 }
