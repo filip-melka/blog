@@ -30,7 +30,6 @@
   .skeleton {
     @apply relative overflow-hidden rounded-md bg-gray-200 dark:bg-gray-700;
   }
-
   .skeleton::after {
     content: '';
     @apply absolute top-0 left-0 h-full w-full;
@@ -55,4 +54,9 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+.katex-display {
+  margin-top: 4rem;
+  margin-bottom: 4rem;
 }

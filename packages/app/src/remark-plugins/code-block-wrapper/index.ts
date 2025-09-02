@@ -11,6 +11,10 @@ type HandlerProps = {
 }
 
 function handleCodeBlock({ imports, node, parent, index }: HandlerProps) {
+  const language = (node as Code).lang || 'plaintext'
+
+  if (language.toLocaleLowerCase() === 'math') return
+
   if (!imports['code']) {
     imports['code'] = {
       fullStatement: `import {CodeBlock} from '@blog/ui-library'`,
@@ -26,7 +30,7 @@ function handleCodeBlock({ imports, node, parent, index }: HandlerProps) {
       {
         type: 'mdxJsxAttribute',
         name: 'language',
-        value: (node as Code).lang || 'plaintext',
+        value: language,
       },
 
       {
