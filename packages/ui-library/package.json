@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "clsx": "^2.1.1",
+    "lucide-react": "^0.542.0",
     "vite-plugin-dts": "^4.5.4"
   }
 }
