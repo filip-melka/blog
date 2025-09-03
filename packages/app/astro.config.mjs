@@ -17,6 +17,9 @@ export default defineConfig({
 
   integrations: [react(), mdx()],
 
+  site: 'https://filip-melka.github.io',
+  base: '/blog',
+
   markdown: {
     syntaxHighlight: 'shiki',
     shikiConfig: {
