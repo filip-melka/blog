@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @plugin "@tailwindcss/typography";
 @source "../../../../node_modules/@blog/ui-library";
+@source "../../../ui-library/src";
 
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
@@ -25,7 +26,10 @@
     @apply flex items-center justify-center;
   }
   .my-prose {
-    @apply prose xl:prose-lg dark:prose-invert max-w-none;
+    @apply prose xl:prose-lg dark:prose-invert prose-figcaption:text-center max-w-none;
+  }
+  .article-component-container {
+    @apply py-20;
   }
   .skeleton {
     @apply relative overflow-hidden rounded-md bg-gray-200 dark:bg-gray-700;

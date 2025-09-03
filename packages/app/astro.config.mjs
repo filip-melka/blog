@@ -6,6 +6,8 @@ import mdx from '@astrojs/mdx'
 import codeBlockWrapper from './src/remark-plugins/code-block-wrapper'
 import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
+// @ts-ignore
+import rehypeFigureTitle from 'rehype-figure-title'
 
 // https://astro.build/config
 export default defineConfig({
@@ -21,6 +23,6 @@ export default defineConfig({
       theme: 'dracula',
     },
     remarkPlugins: [codeBlockWrapper, remarkMath],
-    rehypePlugins: [rehypeKatex],
+    rehypePlugins: [rehypeKatex, rehypeFigureTitle],
   },
 })
