@@ -1,4 +1,9 @@
 @import 'tailwindcss';
+@plugin "@tailwindcss/typography";
+@source "../../../../node_modules/@blog/ui-library";
+@source "../../../ui-library/src";
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
 @theme {
   --color-bg: white;
@@ -7,4 +12,55 @@
   --color-warning: rgb(153, 144, 50);
   --color-error: rgb(185, 56, 62);
   --color-codeblock: rgb(40, 42, 54);
+}
+
+@layer base {
+  [data-theme='dark'] {
+    --color-bg: #17181c;
+    --color-text: #efefef;
+  }
+}
+
+@layer utilities {
+  .centered {
+    @apply flex items-center justify-center;
+  }
+  .my-prose {
+    @apply prose xl:prose-lg dark:prose-invert prose-figcaption:text-center max-w-none;
+  }
+  .article-component-container {
+    @apply py-20;
+  }
+  .skeleton {
+    @apply relative overflow-hidden rounded-md bg-gray-200 dark:bg-gray-700;
+  }
+  .skeleton::after {
+    content: '';
+    @apply absolute top-0 left-0 h-full w-full;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent
+    );
+    animation: shimmer 1.5s infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.katex-display {
+  margin-top: 4rem;
+  margin-bottom: 4rem;
 }

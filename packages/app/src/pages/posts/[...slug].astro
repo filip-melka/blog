@@ -1,0 +1,23 @@
+---
+import { getCollection, render } from 'astro:content'
+import ArticleLayout from '../../layouts/ArticleLayout.astro'
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog')
+  return posts.map((post: any) => ({
+    params: { slug: post.id },
+    props: { post },
+  }))
+}
+
+const { post } = Astro.props
+const { Content, remarkPluginFrontmatter } = await render(post)
+---
+
+<ArticleLayout
+  frontmatter={post.data}
+  headings={remarkPluginFrontmatter.headings || []}
+  dates={remarkPluginFrontmatter.dates}
+>
+  <Content />
+</ArticleLayout>
