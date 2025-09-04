@@ -36,6 +36,9 @@ jobs:
       # 5. Build Astro site
       - name: Build Astro site
         uses: withastro/action@v3
+        env:
+          PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
+          PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
         with:
           path: packages/app
           package-manager: npm
