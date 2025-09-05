@@ -1,6 +1,7 @@
 ---
 banner: ./banners/building-vector-db.gif
-description: I’ve been curious about how vector databases actually work, so I tried building a very simple one myself. Along the way, I learned the basics of embeddings and similarity search, and this article is my attempt to share what I’ve figured out so far.
+description: >-
+  I’ve been wondering how vector databases really work, so I decided to try building a tiny one myself. Along the way, I learned a bit about embeddings and similarity search, and in this article, I’m sharing what I’ve managed to figure out so far.
 slug: building-vector-db
 tags:
   - vector-db
@@ -11,22 +12,22 @@ title: So… What Even Is a Vector Database?
 
 import { Query } from '@blog/ui-library'
 
-Every time you search in Google Photos for ‘dog’, or ask ChatGPT a question, under the hood you’re using a **vector database**. It’s one of those technologies that suddenly seems to be everywhere, powering AI applications from chatbots to image search.
+Vector databases seem to be everywhere these days. Names like [**Pinecone**](https://www.pinecone.io/), [**Weaviate**](https://weaviate.io/), [**Milvus**](https://milvus.io/), and [**Chroma**](https://www.trychroma.com/) keep popping up in blog posts, conference talks, and [Fireship's videos](https://www.youtube.com/watch?v=klTvEwg3oJ4). They’ve quickly become key tools for building AI-powered applications - everything from chatbots to recommendation engines and image search.
 
-But what _is_ a vector database, really? And how does it work?
+But what _is_ a vector database, really? And how does it actually work?
 
-To answer that, I set out to build my own (very simple) vector database from scratch - and in this article, I’ll walk you through what I discovered along the way.
+I didn’t know, so I decided to learn the best way I know: by building a tiny, stripped-down version myself. Nothing fancy, just enough to understand the core concepts. In this article, I’ll share what I discovered about embeddings, similarity, and how all these pieces come together in a simple in-memory vector database.
 
-## My Requirements
+To keep things concrete, I set a small set of requirements inspired by Chroma’s [Getting Started](https://docs.trychroma.com/docs/overview/getting-started?utm_source=chatgpt.com) guide - just simplified for learning purposes.
 
-Recently I went through Chroma's [Getting Started](https://docs.trychroma.com/docs/overview/getting-started) guide, which is what I'll be trying to recreate.
+## Requirements For My Vector Database
 
 In a nutshell, I want to be able to perform two tasks:
 
 1. Add a _document_ to the database.
 2. Query the database to find the most relevant _document_.
 
-For simplicity, when I say _document_ I really mean a short sentence. Here are the five sentences I’ll be working with:
+For simplicity, when I say _document_ I really mean a short sentence. But the concepts we'll be exploring apply to other formats as well. Here are the five sentences I’ll be working with:
 
 - "The cat is sleeping on the chair"
 - "A river flows through the valley"
@@ -34,9 +35,19 @@ For simplicity, when I say _document_ I really mean a short sentence. Here are t
 - "Paris is the capital city of France"
 - "The spacecraft landed safely on the moon"
 
+```python
+documents=[
+    "The cat is sleeping on the chair",
+    "A river flows through the valley",
+    "She loves playing the piano",
+    "Paris is the capital city of France",
+    "The spacecraft landed safely on the moon"
+]
+```
+
 The goal is simple: store these _documents_, then send in a query (another piece of text) and get back the one that’s most relevant.
 
-But that raises first question: how do you store text inside a database designed for **vectors**? To answer that, we first need to talk about **embeddings**.
+But that raises the first question: how do you store text inside a database designed for **vectors**? To answer that, we first need to talk about **embeddings**.
 
 ## What Are Embeddings?
 
@@ -51,7 +62,7 @@ Imagine we draw a graph where the **x-axis** represents gender and the **y-axis*
 
 ![Semantic Space](./images/building-vector-db/semantic-space.png 'Semantic space')
 
-Here, gender and age act as **semantic features** — dimensions that capture part of each word’s meaning. Each feature can be expressed as a number, giving us coordinates for every word:
+Here, _gender_ and _age_ act as **semantic features** — dimensions that capture part of each word’s meaning. Each feature can be expressed as a number, giving us coordinates for every word:
 
 ![Coordinates](./images/building-vector-db/coordinates.png 'Coordinates')
 
@@ -59,15 +70,21 @@ Now, let’s add another word: **"king"**. It shares the same gender and age att
 
 ![3D Space](./images/building-vector-db/3d-space.png '3D space')
 
-Each word can now be described by three numbers: age, gender, and royalty. We call this list of numbers a **vector**. Since the numbers represent semantic features, it’s often called a **feature vector**.
+Each word can now be described by three numbers: _age_, _gender_, and _royalty_. That list of numbers - a vector - is what we call an **embedding**.
 
-Once words are expressed as vectors, we can compare them mathematically. One way is to measure the Euclidean distance between the points. For example, we see that "boy" is closer to "man" than to "woman".
+And just so there's no confusion let's answer the following question:
+
+> What's the difference between an embedding and a vector?
+
+A **vector** is just an ordered list of numbers. Nothing more, nothing less. An **embedding** is a vector created to represent something (like a word, sentence, or image) in a way that captures its meaning. So every embedding is a vector, but not every vector is an embedding. However, you'll often find these words used interchangeably (including this article).
+
+The real power of embeddings comes from the fact that we can compare them mathematically. One way is to measure the straight line between the points (also known as Euclidean distance, more on that later). For example, we see that "boy" is closer to "man" than to "woman".
 
 ![Distance](./images/building-vector-db/distance.png 'Distance between points')
 
-Of course, three features aren’t nearly enough to capture the full meaning of language. Where would you plot words like _"cat,"_ _"run,"_ or _"Mars"_? In practice, embedding models use **hundreds or even thousands of dimensions**. For example, OpenAI’s `text-embedding-3-large` model creates embeddings with **3,072 dimensions**.
+Of course, three features aren’t nearly enough to capture the full meaning of language. Where would you plot words like _"cat,"_ _"run,"_ or _"Mars"_? In practice, embeddings live in **hundreds or even thousands of dimensions**. For example, OpenAI’s `text-embedding-3-large` model produces vectors with **3,072 dimensions**.
 
-One last note: in our example, we labeled features like gender, age, and royalty to make things intuitive. Real embeddings don’t have neatly interpretable axes. They’re generated by machine learning models that learn useful patterns automatically — the dimensions themselves are abstract, but together they capture semantic meaning.
+⚠️ **One last note:** in our example, we labeled features like _gender_, _age_, and _royalty_ to make things intuitive. Real embeddings don’t have neatly interpretable axes. They’re generated by machine learning models that learn useful patterns automatically — the dimensions themselves are abstract, but together they capture semantic meaning.
 
 With this in mind, we can now turn our sample _documents_ into embeddings.
 
@@ -87,26 +104,23 @@ Before encoding, we usually clean and preprocess the text. This helps simplify t
 - **Stemming**: reducing words to their root form (e.g., _“running” → “run”_)
 - **Lemmatization**: mapping words to their base form (e.g., _“better” → “good”_)
 
-In practice, modern embeddings (like OpenAI’s or Hugging Face models) usually skip manual preprocessing and handle raw text. But since we’re building from scratch, we’ll keep things explicit.
-
 For tokenization, I'll be using the [`nltk`](https://www.nltk.org/) (Natural Language Toolkit) library.
-
-For our example, we’ll use [`nltk`](https://www.nltk.org/?utm_source=chatgpt.com) (Natural Language Toolkit) library to tokenize, lowercase, and remove punctuation:
 
 ```python
 from nltk.tokenize import word_tokenize
-import string
-
-document = documents[0] # "The cat is sleeping on the couch."
 
 # Tokenization
 words = word_tokenize(document)
 
-# Lowercasing and removing punctuation
-preprocessed_words = [word.lower() for word in words if word not in string.punctuation]
+# Lowercasing
+preprocessed_words = [word.lower() for word in words]
 ```
 
-At this point, our _document_ is a clean list of tokens, ready for embedding.
+At this point, our _document_ is a clean list of tokens (words), ready for embedding.
+
+```
+['the', 'cat', 'is', 'sleeping', 'on', 'the', 'chair']
+```
 
 ### Word embeddings
 
@@ -128,20 +142,19 @@ To train our Word2Vec model, we need a dataset. Luckily, [Hugging Face](https://
 ```python
 from datasets import load_dataset
 from nltk.tokenize import sent_tokenize, word_tokenize
-import string
 
 # https://huggingface.co/datasets/wikimedia/wikipedia
 dataset = load_dataset("wikimedia/wikipedia", "20231101.en", split="train")
 
-# Preprocess text
-all_sentences = []
+# Training data (individual words from Wikipedia articles)
+training_words = []
 
-# Using first 50,000 articles
+# Using first 50,000 articles for demonstration
 for article in dataset["text"][:50000]:
-    for sent in sent_tokenize(article):
-        tokens = [word.lower() for word in word_tokenize(sent.lower()) if word not in string.punctuation]
-        if tokens:  # skip empty sentences
-            all_sentences.append(tokens)
+	for sent in sent_tokenize(article):
+		tokens = [word.lower() for word in word_tokenize(sent.lower())]
+		if tokens:  # skip empty words
+			training_words.append(tokens)
 ```
 
 ⚠️ **Note:** real embedding models are trained on much larger datasets. Here we’re using 50,000 articles just to make it feasible on my laptop.
@@ -153,7 +166,7 @@ import gensim
 
 # Build a model using the CBOW approach
 model = gensim.models.Word2Vec(
-    sentences=all_sentences,
+    sentences=training_words,
     vector_size=100,
     window=5,
     min_count=5,   # ignore very rare words
@@ -172,7 +185,7 @@ This gives us one 100-dimensional vector per token:
 
 ### Document embeddings
 
-Now we have five word-level embeddings. But we want a **single embedding for the entier _document_**.
+Now we have seven word-level embeddings. But we want a **single embedding for the entier _document_**.
 
 These are some of the common strategies for combining word embeddings:
 
@@ -183,7 +196,7 @@ These are some of the common strategies for combining word embeddings:
 I decided to do mean pooling:
 
 ```python
-embedding = np.mean(word_embeddings, axis=0)
+docuemtn_embedding = np.mean(word_embeddings, axis=0)
 ```
 
 ![Document Embedding](./images/building-vector-db/document-embedding.png 'Document embedding')
@@ -191,11 +204,13 @@ embedding = np.mean(word_embeddings, axis=0)
 We can use the following function to generate embeddings for all our documents:
 
 ```python
+from nltk.tokenize import word_tokenize
+
 def embed(document):
     # word tokenization + lowercasing + pucntuation removal
     words = []
-    [word.lower() for word in word_tokenize(sent.lower()) if word not in string.punctuation]
-    for word in [word.lower() for word in word_tokenize(document.lower()) if word not in string.punctuation]:
+    [word.lower() for word in word_tokenize(document.lower())]
+    for word in [word.lower() for word in word_tokenize(document.lower())]:
         if word:
             words.append(word)
 
@@ -203,8 +218,8 @@ def embed(document):
     word_embedding = [model.wv[word] for word in words]
 
     # combine them into a single vector representation
-    embedding = np.mean(word_embedding, axis=0)
-    return embedding
+    docuemtn_embedding = np.mean(word_embedding, axis=0)
+    return docuemtn_embedding
 ```
 
 ![Embedded documents](./images/building-vector-db/documents-embedding.png 'Embedded documents')
@@ -227,11 +242,11 @@ Now we have a vector for each document. In real systems, vectors are usually sto
 ```json
 {
   "id": "doc_123",
-  "text": "The capital of France is Paris."
+  "text": "The cat is sleeping on the chair"
 }
 ```
 
-For simplicity, we’ll store both together in a Python list of dictionaries:
+For simplicity, we’ll store both the embedding (vector) and the content together in a Python list of dictionaries:
 
 ```python
 db_list = []
@@ -251,15 +266,15 @@ At this point, we have a **mini in-memory vector database** ready for queries.
 
 Now that we have a list of embedded _documents_, it’s time to tackle our second requirement: **finding the most relevant document for a given query**.
 
-The key idea is simple: we need to compare the query with the stored _document_ embeddings. But before we can do that, we first need to turn the query itself into a vector using the **same preprocessing and embedding process** as we used for the _documents_.
+The key idea is simple: we need to compare the query with the stored _document_ embeddings. But before we can do that, we first need to turn the query itself into an embedding using the **same preprocessing and embedding process** as we used for the _documents_.
 
 Here’s the workflow for handling a query:
 
 1. Preprocess the query (tokenize, lowercase, remove punctuation).
-2. Embed each token into a vector (using the same embedding model).
-3. Combine the token embeddings into a single **document-level embedding**.
+2. Turn each token into an embedding (using the same embedding model).
+3. Combine the word-level embeddings into a single **document-level embedding**.
 
-Once we have the query embedding, it’s in the same “format” as the stored document vectors. We can now start comparing vectors to determine which document is the most relevant.
+Once we have the query embedding, we can start comparing the vectors to determine which document is the most relevant.
 
 But that raises the next question: **how do we measure similarity between two vectors?**
 
@@ -284,7 +299,7 @@ def euclidean_distance(vector1, vector2):
     return np.linalg.norm(vector1 - vector2)
 ```
 
-Euclidean distance works well in low dimensions, but it’s **not the preferred method for word embeddings**, especially in high-dimensional spaces. That’s where cosine similarity comes in.
+Euclidean distance works well in low dimensions, but it’s not the preferred method for document embeddings, especially in high-dimensional spaces. That’s where cosine similarity comes in.
 
 ### Cosine similarity
 
@@ -313,7 +328,7 @@ $$
 
 Where:
 
-- $A\cdot B$ is the dot product,
+- $A\cdot B$ is the [dot product](https://www.mathsisfun.com/algebra/vectors-dot-product.html),
 - $|A|$ and $|B|$ are the magnitudes (lengths) of the vectors,
 - $\theta$ is the angle between them.
 
@@ -332,13 +347,11 @@ def cosine_sim(vector1, vector2):
     return np.dot(vector1, vector2) / (np.linalg.norm(vector1) * np.linalg.norm(vector2))
 ```
 
-With NumPy, this is straightforward to compute:
+These are some of the main reasons why cosine similarity is often preferred over Euclidean distance:
 
-- It requires fewer arithmetic operations than Euclidean distance.
-- Vector **magnitude** often carries less meaning than direction.
-- In high-dimensional spaces, Euclidean distance suffers from the **curse of dimensionality**, where distances between points tend to become similar, reducing discriminative power.
-
-Cosine similarity, by focusing on direction rather than length, provides a more reliable measure of semantic similarity for embeddings.
+- **Magnitude isn’t as important as direction.** Two embeddings can have very different lengths (norms) but still point in nearly the same direction, which usually means they’re semantically similar.
+- **More robust in high dimensions.** Euclidean distance suffers from the _curse of dimensionality_: as dimensions increase, distances between points tend to become indistinguishable. Cosine similarity, by focusing on angles instead of absolute distances, avoids much of this problem.
+- **Better semantic alignment.** In practice, embeddings trained for semantic similarity are optimized so that their directions carry more meaning than their magnitudes, making cosine similarity a better fit.
 
 ### Back to querying
 
@@ -382,11 +395,11 @@ Here are a few more queries I tried:
 
 <Query client:idle />
 
-This is already looking promising! For any new query, we can embed it, compare it with all stored embeddings, and return the document with the highest cosine similarity. So grab a well-deserved cup of coffee - we’ve just built our own **in-memory vector database**!
+This is already looking promising! For any new query, we can embed it, compare it with all stored embeddings, and return the document with the highest cosine similarity. Congratulations - we’ve just built a tiny, in-memory vector database! 🎉
 
-For our small dataset, this **brute-force approach** works perfectly. But imagine having thousands - or millions - of documents: comparing every single one would be very inefficient, with a time complexity of **O(n)**.
+For our toy example with just a handful of sentences, this **brute-force approach** works fine. But if we had thousands - or even millions - of documents, checking every single one would quickly become impractical. The time complexity is **O(n)**, which doesn’t scale well.
 
-However, as datasets grow, we need smarter ways to make similarity search more efficient. That’s where **indexing** comes in.
+To handle larger datasets, we’ll need something smarter: a way to organize embeddings so that we can find the nearest ones much faster. That’s where **indexing** comes in.
 
 ## Indexing
 
@@ -394,7 +407,7 @@ Before we dive in, let’s answer the obvious question: **what is an index?**
 
 An **index** is a data structure that improves the speed of data retrieval operations. In a vector database, it’s a structure that allows us to quickly search through and retrieve **high-dimensional vector embeddings**.
 
-Right now, our database is just a **list**. That means whenever we query it, we must compare the query embedding to _every single stored embedding_. This brute-force approach works fine for a small dataset, but as soon as we scale to thousands or millions of vectors, it becomes painfully slow. Indexes solve this problem by organizing vectors in smarter ways.
+Right now, our "database" is just a **list**. That means whenever we query it, we must compare the query embedding to _every single stored embedding_. This brute-force approach works fine for a small dataset, but as soon as we scale to thousands or millions of vectors, it becomes painfully slow. Indexes solve this problem by organizing vectors in smarter ways.
 
 ### Types of vector indexes
 
@@ -402,28 +415,30 @@ There are several approaches to indexing high-dimensional vectors, each with dif
 
 1. **Quantization-based indexes**
    - Reduce the precision of vectors to save memory and speed up search.
-   - Example: Product Quantization (PQ).
-2. **Graph-based indexes**
+   - Example: [Product Quantization](https://www.pinecone.io/learn/series/faiss/product-quantization/) (PQ).
+1. **Graph-based indexes**
    - Represent vectors as nodes in a graph, connecting nearby vectors.
    - Search follows the edges to find neighbors efficiently.
-3. **Hash-based indexes**
+1. **Hash-based indexes**
    - Use **hashing functions** to map similar vectors to the same buckets.
-   - Locality-Sensitive Hashing (LSH) is a common example.
-4. **Tree-based indexes**
+   - [Locality-Sensitive Hashing](https://www.pinecone.io/learn/series/faiss/locality-sensitive-hashing/) (LSH) is a common example.
+1. **Tree-based indexes**
    - Organize vectors in a hierarchical tree structure, partitioning space recursively.
-   - Examples include KD-trees and Ball trees.
+   - For example [KD-trees](https://medium.com/@katyayanivemula90/what-is-a-k-dimensional-tree-8265cc737d77).
 
 ### Nearest neighbor search
 
-Indexes allow us to quickly answer one key question:
+At the core of all this is a simple question:
 
-> Given a query vector, which stored vector is the closest?
+> Given a query vector, which stored vector is closest?
 
-We can use a tree-based index, like a KD-tree, to find the **exact nearest neighbor** - the vector that is truly closest to our query. KD-trees work well for **low-dimensional data**, but as the number of dimensions increases (hundreds or thousands, as with typical embeddings), their efficiency degrades and ends up being almost as slow as comparing every vector one by one (with time complexity reaching O(n)).
+Tree-based indexes like KD-trees can answer this exactly — they return the **true nearest neighbor**. That works well for low-dimensional data, but as dimensions climb into the hundreds or thousands (as they do with embeddings), KD-trees lose efficiency. In fact, they eventually become almost as slow as brute force, with time complexity approaching **O(n)**.
 
-That's why most modern systems rely on **approximate nearest neighbor (ANN) search** instead. Rather than guaranteeing the absolute closest vector, ANN quickly returns vectors that are likely very close to the query. This approach is much faster and scales efficiently for very large or high-dimensional datasets, though it occasionally sacrifices perfect accuracy.
+That’s why modern vector databases usually turn to **approximate nearest neighbor (ANN) search**. Instead of guaranteeing the single closest vector, ANN quickly finds vectors that are _very likely_ close enough. This trade-off makes it dramatically faster and much more scalable, even if it sometimes sacrifices perfect accuracy.
 
-One popular ANN indexing method is [**Hierarchical Navigable Small Worlds (HNSW)**](https://www.pinecone.io/learn/series/faiss/hnsw/), which organizes vectors in a multi-layered graph to efficiently navigate toward the nearest neighbors.
+One widely used method here is [**Hierarchical Navigable Small Worlds (HNSW)**](https://www.pinecone.io/learn/series/faiss/hnsw/?utm_source=chatgpt.com), which organizes vectors into a layered graph structure. Searches start broad and then “zoom in,” navigating efficiently toward the nearest neighbors.
+
+We won’t dive deeper into ANN or indexes here, but hopefully this gives you an idea of how vector databases keep similarity search fast even as the data grows huge.
 
 ## Summary
 
