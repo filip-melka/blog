@@ -17,7 +17,7 @@ function addPubDate(path) {
   const { data, content } = matter(file)
 
   if (!data.pubDate) {
-    const today = new Date().toISOString().split('T')[0]
+    const today = new Date()
     data.pubDate = today
 
     const newFile = matter.stringify(content, data)
