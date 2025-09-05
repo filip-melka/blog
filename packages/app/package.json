@@ -6,7 +6,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "preprocess": "node scripts/add-pub-date.js"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.4",
@@ -17,6 +18,8 @@
     "@types/react": "^19.1.12",
     "@types/react-dom": "^19.1.9",
     "astro": "^5.13.4",
+    "glob": "^10.4.5",
+    "gray-matter": "^4.0.3",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "rehype-figure-title": "^1.0.0",

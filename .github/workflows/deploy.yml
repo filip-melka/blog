@@ -33,7 +33,11 @@ jobs:
       - name: Build Storybook
         run: npm run build --workspace=@blog/ui-library
 
-      # 5. Build Astro site
+      # 5. Preprocess (add publish dates)
+      - name: Preprocess
+        run: npm run preprocess --workspace=@blog/app
+
+      # 6. Build Astro site
       - name: Build Astro site
         uses: withastro/action@v3
         env:
