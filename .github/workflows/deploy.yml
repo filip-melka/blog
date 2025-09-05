@@ -37,7 +37,13 @@ jobs:
       - name: Preprocess
         run: npm run preprocess --workspace=@blog/app
 
-      # 6. Build Astro site
+      # 6. Commit changes
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: 'Add missing pubDate to MDX articles'
+
+      # 7. Build Astro site
       - name: Build Astro site
         uses: withastro/action@v3
         env:
