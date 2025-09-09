@@ -136,11 +136,11 @@ Once we have preprocessed words (tokens), the next step is to turn each word int
 
 - **Pre-trained embeddings** – Models like GloVe or FastText provide ready-made vectors you can download and use directly. These embeddings are typically static, meaning each word has a single fixed vector, regardless of context.
 - **Contextual embeddings** – Modern models like BERT or GPT generate vectors that depend on the word’s surrounding context (so “bank” in “river bank” and “bank account” would have different embeddings).
-- **Custom-trained embeddings** – You can also train your own embedding model on a dataset of your choice, which is a great if you need domain-specific vocabulary (e.g., medicine, law).
+- **Custom-trained embeddings** – You can also train your own embedding model on a dataset of your choice, which is great if you need a domain-specific vocabulary (e.g., medicine, law).
 
 For my project, I went with the third option: I decided to **train a small Word2Vec model**.
 
-Word2Vec is one of the earliest and most influential techniques for creating embeddings. Developed by Tomas Mikolov and his team at Google in 2013, it learns to represent words as vectors by looking at the contexts in which they appear. Depending on your needs, you can either:
+**Word2Vec** is one of the earliest and most influential techniques for creating embeddings. Developed by Tomas Mikolov and his team at Google in 2013, it learns to represent words as vectors by looking at the contexts in which they appear. Depending on your needs, you can either:
 
 - **download a pre-trained Word2Vec model** trained on huge corpora (like Google News), or
 - **train your own Word2Vec model** on a custom dataset.
@@ -239,7 +239,7 @@ def embed(document):
 
 ### Storing embeddings
 
-Now we have a vector for each document. In real systems, embeddings are usually stored in a vector database, while the raw text is stored separately:
+Now we have an embedding for each document. In real systems, embeddings are usually stored in a vector database, while the raw text is stored separately:
 
 - Vector DB:
 
@@ -259,7 +259,7 @@ Now we have a vector for each document. In real systems, embeddings are usually 
 }
 ```
 
-For simplicity, we’ll store both the embedding (vector) and the content together in a Python list of dictionaries:
+To keep things simple, we’ll put the embedding (vector) and its content together in a Python dictionary. Each dictionary will then be added to a list.
 
 ```python
 db_list = []
@@ -283,9 +283,9 @@ The key idea is simple: we need to compare the query with the stored _document_ 
 
 Just to recap, here’s what happens with a query:
 
-1. Preprocess the query (tokenize, lowercase, remove punctuation).
-2. Turn each token into an embedding (using the same embedding model).
-3. Combine the word-level embeddings into a single **document-level embedding**.
+1. Preprocess the query (tokenize, lowercase).
+2. Turn each token into an embedding (using our custom-trained _word2vec_ model).
+3. Combine the word-level embeddings into a single **query-level embedding**.
 
 Once we have the query embedding, we can start comparing the vectors to determine which document is the most relevant.
 
@@ -293,7 +293,7 @@ But that raises the next question: **how do we measure similarity between two ve
 
 ## Measuring Similarity
 
-Once we have document embeddings, we need a way to measure **how similar two vectors are**. Let’s look at two common methods: **Euclidean distance** and **Cosine similarity**.
+Once we have document embeddings, we need a way to measure **how similar two embeddings (vectors) are**. Let’s look at two common methods: **Euclidean distance** and **Cosine similarity**.
 
 ### Euclidean distance
 
@@ -437,7 +437,7 @@ There are several approaches to indexing high-dimensional vectors, each with dif
    - [Locality-Sensitive Hashing](https://www.pinecone.io/learn/series/faiss/locality-sensitive-hashing/) (LSH) is a common example.
 1. **Tree-based indexes**
    - Organize vectors in a hierarchical tree structure, partitioning space recursively.
-   - For example [KD-trees](https://medium.com/@katyayanivemula90/what-is-a-k-dimensional-tree-8265cc737d77).
+   - Example: [KD-trees](https://medium.com/@katyayanivemula90/what-is-a-k-dimensional-tree-8265cc737d77).
 
 ### Nearest neighbor search
 
