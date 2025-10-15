@@ -3,7 +3,9 @@ import { getCollection } from 'astro:content'
 import BaseLayout from '../layouts/BaseLayout.astro'
 import BlogPostItem from '../components/astro/BlogPostItem.astro'
 
-const allPosts = await getCollection('blog')
+const allPosts = await getCollection('blog').then((posts) =>
+  posts.filter((post) => !post.data.isDraft)
+)
 const currentDate = new Date()
 ---
 
