@@ -4,7 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro'
 import BlogPostItem from '../components/astro/BlogPostItem.astro'
 
 const allPosts = await getCollection('blog').then((posts) =>
-  posts.filter((post) => !post.data.isDraft)
+  posts.filter((post) => !post.data.isDraft || import.meta.env.DEV)
 )
 const currentDate = new Date()
 ---
@@ -26,6 +26,7 @@ const currentDate = new Date()
               id={post.id}
               description={post.data.description}
               date={post.data.pubDate}
+              isDraft={post.data.isDraft}
             />
           ))
       }
