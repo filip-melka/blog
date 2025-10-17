@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
 import maxWidth from '../../../decorators/max-width'
-import CroppedPrecision from '.'
+import ClippedPrecision from '.'
 
 const meta = {
-  component: CroppedPrecision,
-  title: 'Articles/BLEU/Cropped Precision',
-} satisfies Meta<typeof CroppedPrecision>
+  component: ClippedPrecision,
+  title: 'Articles/BLEU/Clipped Precision',
+} satisfies Meta<typeof ClippedPrecision>
 
 export default meta
 type Story = StoryObj<typeof meta>

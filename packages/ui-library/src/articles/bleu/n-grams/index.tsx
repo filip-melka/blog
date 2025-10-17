@@ -11,17 +11,17 @@ function NGrams({ text = 'he is eating tasty apple' }) {
   }
 
   const colors = [
-    'bg-green-100 hover:bg-green-300',
-    'bg-blue-100 hover:bg-blue-300',
-    'bg-orange-100 hover:bg-orange-300',
-    'bg-red-100 hover:bg-red-300',
+    'bg-green-100 hover:bg-green-300 dark:bg-green-700/80 dark:hover:bg-green-500',
+    'bg-blue-100 hover:bg-blue-300 dark:bg-blue-700/80 dark:hover:bg-blue-500',
+    'bg-orange-100 hover:bg-orange-300 dark:bg-orange-700/80 dark:hover:bg-orange-500',
+    'bg-red-100 hover:bg-red-300 dark:bg-red-700/80 dark:hover:bg-red-500',
   ]
 
   const baseColors = [
-    'bg-green-300',
-    'bg-blue-300',
-    'bg-orange-300',
-    'bg-red-300',
+    'bg-green-300 dark:bg-green-500',
+    'bg-blue-300 dark:bg-blue-500',
+    'bg-orange-300 dark:bg-orange-500',
+    'bg-red-300 dark:bg-red-500',
   ]
 
   function addLabel(n: number) {
@@ -38,17 +38,15 @@ function NGrams({ text = 'he is eating tasty apple' }) {
   }
 
   return (
-    <div className="article-component-container">
+    <div className="py-12 dark:text-white">
       <p className="flex flex-wrap justify-center text-xl">
         {text.split(' ').map((word, i) => (
           <span
-            className={clsx(
-              'px-2 py-1 transition-colors duration-75',
-              baseColors[selectedColorIndex],
-              {
-                'bg-transparent': !highlightedIndices.includes(i),
-              }
-            )}
+            key={i}
+            className={clsx('px-2 py-1 transition-colors duration-75', {
+              [baseColors[selectedColorIndex]]: highlightedIndices.includes(i),
+              'bg-transparent': !highlightedIndices.includes(i),
+            })}
           >
             {word}
           </span>
@@ -60,7 +58,7 @@ function NGrams({ text = 'he is eating tasty apple' }) {
             <span className="text-sm font-semibold">
               {n}-grams{addLabel(n)}:
             </span>
-            <div className="mt-2 flex gap-2">
+            <div className="mt-2 flex gap-2 dark:font-semibold">
               {getNGrams(n, text).map((nGram, i) => (
                 <span
                   onMouseEnter={() => {

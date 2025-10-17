@@ -16,7 +16,7 @@ function addPubDate(path) {
   const file = fs.readFileSync(path, 'utf-8')
   const { data, content } = matter(file)
 
-  if (!data.pubDate) {
+  if (!data.pubDate && !data.isDraft) {
     const today = new Date()
     data.pubDate = today
 

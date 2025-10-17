@@ -13,6 +13,14 @@ const slug = frontmatter.slug
   href="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.css"
 />
 
+{
+  frontmatter.isDraft && (
+    <div class="fixed right-8 bottom-8 rounded bg-blue-200 px-2 py-1 align-middle text-base text-blue-800">
+      Draft
+    </div>
+  )
+}
+
 <BaseLayout pageTitle={frontmatter.title}>
   <main class="px-4 sm:px-12 md:px-20">
     <article class="pb-20">
@@ -26,7 +34,9 @@ const slug = frontmatter.slug
           </aside>
         </div>
         <div class="mx-auto max-w-3xl">
-          <h1 class="mb-12 text-4xl font-semibold">{frontmatter.title}</h1>
+          <h1 class="mb-12 text-4xl font-semibold">
+            {frontmatter.title}
+          </h1>
           <div class="my-prose">
             <slot />
           </div>

@@ -188,7 +188,7 @@ function Query() {
   const [index, setIndex] = useState(0)
 
   return (
-    <div className="article-component-container">
+    <div className="py-20">
       <div className="mb-12">
         <p className="mt-0! mb-2! text-center text-sm font-semibold">Query:</p>
         <div className="mx-auto max-w-sm text-sm">
