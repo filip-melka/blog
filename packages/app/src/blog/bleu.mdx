@@ -11,7 +11,6 @@ tags:
   - nlp
 title: Evaluating Machine Translation with the BLEU Metric
 isDraft: true
-pubDate: 2025-10-15T22:36:03.419Z
 ---
 
 import { ClippedPrecision, NGrams, ComputePrecisions } from '@blog/ui-library'
@@ -32,38 +31,36 @@ There are several metrics for evaluating machine translation, but one of the ear
 
 According to [Wikipedia](https://en.wikipedia.org/wiki/BLEU):
 
-> BLEU (bilingual evaluation understudy) is an algorithm for evaluating the quality of text which has been machine-translated from one natural language to another.
+> BLEU is an algorithm for evaluating the quality of text which has been machine-translated from one natural language to another.
 
 Developed by researchers at IBM in 2001 (Papineni et al., 2002), BLEU was among the first metrics to show a strong correlation with human judgment. Despite its known limitations (which we’ll explore later), it remains widely used today because it’s **simple**, **fast**, and **language-agnostic**.
 
 At a high level, you can think of BLEU as a black box that takes in:
 
-- Your translated sentence (the **candidate** or **prediction**).
-- One or more **reference translations** - human-produced translations considered correct.
+- Your _machine-produced translation_ (the **candidate** or **prediction**)
+- One or more **reference translations** — human-produced translations considered correct
 
 It then outputs a score between **0 and 1**, known as the **BLEU score**, where higher values indicate better quality.
 
-In other words, if you want to evaluate how well your model translates a document, you’ll need at least one **reference translation** to compare its output against.
+**Note:** although BLEU is typically computed across an entire corpus of translations (to smooth out sentence-level variability), we’ll be using sentence-level examples for simplicity.
 
-**Note:** although BLEU is typically computed across an entire **corpus** of translations (to smooth out sentence-level variability), we’ll focus on **sentence-level examples** in this guide for simplicity.
-
-Before diving into how BLEU works under the hood, let’s first review two key ideas it builds on: **n-grams** and **precision**.
+Before diving into how BLEU works, we need to understand two key ideas: **n-grams** and **precision**.
 
 ## What Are N-grams?
 
-If you’ve done any NLP before, you’ve likely come across this term. In short, an n-gram is:
+If you’ve done any NLP before, you’ve likely come across this term. In short:
 
-> A set of $n$ consecutive words in a sentence.
+> An n-gram is a sequence of $n$ consecutive words in a sentence.
 
-For example, let's say we have the following sentence:
+For example, take the sentence:
 
 - "he is eating tasty apple"
 
-We could have n-grams such as:
+We could extract n-grams such as:
 
 <NGrams client:idle />
 
-Well, there's not much more to n-grams, so let’s move on to our second concept — **precision**.
+And that’s really it! With n-grams covered, let’s move on to **precision**.
 
 ## Precision
 
@@ -74,7 +71,7 @@ Let's say we have:
 - **Reference:** "the bird flies over the water"
 - **Prediction:** "bird flies across the water"
 
-To compute precision for individual words (1-grams):
+To compute precision for single words (1-grams):
 
 ```math
 Precision = \frac{\text{Number of correctly predicted words}}{\text{Number of total predicted words}}
@@ -88,34 +85,34 @@ $$
 
 Simple — but this naïve approach has two problems.
 
-### Repetition
+### 1) Repetition
 
 It’s easy to “cheat” by repeating words:
 
-- **Reference:** "the cat is sleeping"
+- **Reference:** "the bird flies over the water"
 - **Prediction:** "the the the"
 
 This gives a perfect score (3/3 = 1) — even though it’s nonsense.
 
-### Multiple Correct Answers
+### 2) Multiple correct answers
 
 In translation, there’s rarely a single “correct” answer. For example:
 
 - **Reference 1:** “The cat is on the mat”
 - **Reference 2:** “There’s a cat sitting on the mat”
 
-Both are valid translations of the same sentence. A fair metric should recognize this and not penalize the system for choosing one phrasing over another.
+Both are valid translations. A fair metric should recognize this and not penalize the system for choosing one phrasing over another.
 
 BLEU accounts for this by comparing the prediction against **multiple reference translations**.
 
-### Clipped Precision
+### Solution: Clipped Precision
 
 To fix both issues — repetition and multiple valid outputs — BLEU uses **modified precision**, also known as **clipped precision**.
 
 Let’s see how it works:
 
 - **Reference 1:** “there is a cat on the mat”
-- **Reference 2:** “a cat sits on the matt”
+- **Reference 2:** “a cat sits on the mat”
 - **Prediction:** “the cat is on the mat”
 
 Here’s what changes:
@@ -126,24 +123,23 @@ Here’s what changes:
 <ClippedPrecision
   client:idle
   prediction="the cat is on the mat"
-  references={['there is a cat on the mat', 'a cat sits on the matt']}
+  references={['there is a cat on the mat', 'a cat sits on the mat']}
 />
 
 From now on, when we say _precision_, we mean _clipped precision_.
 
-## How Is BLEU Score Calculated?
+## How Is the BLEU Score Calculated?
 
-For simplicity, we’ll work with a single reference sentence:
+For simplicity, we’ll work with a single reference:
 
 - **Reference:** "the cat is sitting on the mat"
 - **Prediction:** "the cat on the mat"
 
-### Step 1: Compute Precision for Each n-gram
+### Step 1: Compute precision for each n-gram
 
-We start by computing the **precision** for individual _n_-grams — that is, how many of the predicted _n_-grams also appear in the reference.
+We start by computing **precision** for each n-gram — that is, how many predicted n-grams also appear in the reference.
 
-In full BLEU, we usually use up to **4-grams** ($N=4$).  
-However, since our example sentence is short, we’ll compute precision for only **1-grams** and **2-grams**.
+In full BLEU, we usually use up to **4-grams** ($N=4$). However, since we’re using short sentences, we’ll compute precision only for **1-grams** and **2-grams**.
 
 <ComputePrecisions client:idle />
 
@@ -151,37 +147,33 @@ Once we have these precision values, we can move on to combining them.
 
 ### Step 2: Compute geometric mean precision
 
-Next, we calculate the **geometric mean** of our _n_-gram precisions.
+Next, we calculate the **geometric mean** of our n-gram precisions.
 
-To compute a geometric mean, we multiply all values together and take the $N$th root (where $N$ is the number of values):
+To compute the geometric mean, we multiply all values together and take the $N$th root (where $N$ is the number of values):
 
 ```math
 Geometric\ Mean = \left( \prod_{i=1}^{N} x_i \right)^{\frac{1}{N}}
 ```
 
-The geometric mean is preferred here because BLEU treats precision scores **multiplicatively**, not additively.
+The geometric mean is preferred here because BLEU treats precision scores **multiplicatively**, not additively. This means all n-gram precisions must be high — a single low precision will significantly reduce the overall score.
 
-This means all _n_-gram precisions must be high — a single low precision will significantly reduce the overall score.
-
-Using $N = 2$ and equal weights $w_n = \frac{1}{N} = \frac{1}{2}$:
+Using $N = 2$:
 
 ```math
-Geometric\ Mean\ Precision = (p_{1})^{\frac{1}{2}}\ \cdot(p_{2})^{\frac{1}{2}}
+Geometric\ Mean\ Precision = \sqrt{ p_{1}\cdot p_{2} }
 ```
 
 Given our precisions of $\frac{5}{5}$ and $\frac{3}{4}$:
 
 ```math
-Geometric\ Mean\ Precision = (\frac{5}{5})^{\frac{1}{2}}\ \cdot(\frac{3}{4})^{\frac{1}{2}}\approx 0.866
+Geometric\ Mean\ Precision = \sqrt{ \frac{5}{5} \cdot \frac{3}{4} }\approx 0.866
 ```
 
 ### Step 3: Apply the Brevity Penalty
 
 If we stopped here, a model could “cheat” by outputting very short sentences — for example, predicting just “the” would yield a perfect 1-gram precision ($\frac{1}{1}=1$), even though it’s a terrible translation.
 
-To prevent this, BLEU includes a **brevity penalty (BP)** that penalizes overly short predictions.
-
-It’s defined as:
+To prevent this, BLEU applies a **Brevity Penalty (BP)** that penalizes overly short predictions:
 
 ```math
 \text{BP} =
@@ -193,10 +185,10 @@ e^{(1 - \frac{r}{c})}, & \text{if } c \leq r
 
 where:
 
-- $c$ = length of the predicted sentence (number of words in the prediction)
-- $r$ = length of the reference sentence (number of words in the target)
+- $c$ = length of the predicted sentence (number of words in the _prediction_)
+- $r$ = length of the reference sentence (number of words in the _target_)
 
-The brevity penalty is never greater than 1 and becomes smaller when the predicted sentence is shorter than the reference.
+The brevity penalty is never greater than 1 and becomes smaller when the prediction is shorter than the reference.
 
 In our example, the reference has 7 words and the prediction has 5:
 
@@ -206,10 +198,10 @@ Brevity\ Penalty = e^{1 - \frac{7}{5}} = 0.67
 
 ### Step 4: Calculate the final BLEU score
 
-Finally, we multiply the brevity penalty by the geometric mean of the _n_-gram precisions:
+Finally, we multiply the brevity penalty by the geometric mean of the n-gram precisions:
 
 ```math
-BLEU(N) = Brevity\ Penalty \cdot Geometric\ Average\ Precision\ Scores(N)
+BLEU(N) = Brevity\ Penalty \cdot Geometric\ Mean\ Precision\ Scores(N)
 ```
 
 Putting it all together:
@@ -218,19 +210,13 @@ Putting it all together:
 BLEU(2) = 0.67 \cdot 0.866 = 0.58
 ```
 
-Our translation achieves a **BLEU score of 0.58**, or **58%** — indicating a _moderate to strong overlap_ with the reference translation.
+Our translation achieves a **BLEU score of 0.58**, or **58%**, indicating a _moderate to strong overlap_ with the reference translation.
 
-Of course, this is a simplified, sentence-level demonstration.
+Of course, this is a simplified, sentence-level example.
 
-In practice, BLEU is computed over an entire **corpus**, typically using _up to 4-grams_.
+In practice, BLEU is computed over an entire **corpus**, typically using up to **4-grams**.
 
-In practice, a score of 0.6–0.7 is considered the best you can achieve. A score close to 1 is unrealistic and should raise a flag.
-
-For completeness, the general BLEU formula used in most implementations is:
-
-```math
-BLEU = BP \cdot \exp\left( \sum_{n=1}^{N} w_n \log p_n \right)
-```
+Also keep in mind: a score of **0.6–0.7** is already very high. A score near **1.0** is unrealistic and usually signals overfitting or data leakage.
 
 | BLEU Score | Interpretation                                               |
 | ---------- | ------------------------------------------------------------ |
@@ -239,7 +225,7 @@ BLEU = BP \cdot \exp\left( \sum_{n=1}^{N} w_n \log p_n \right)
 | 0.5–0.7    | Good — strong overlap                                        |
 | 0.7–1.0    | Excellent — near-identical wording (often suspiciously high) |
 
-## Implementing BLEU Score in Python
+## Implementing BLEU in Python
 
 In practice, you don’t need to implement BLEU from scratch.
 
@@ -271,35 +257,48 @@ Let’s unpack the last two.
 
 ### Weights
 
-As you learned earlier, BLEU combines _n_-gram precisions using a **weighted geometric mean**.  
-The `weights` parameter controls how much each _n_-gram contributes to the final score.
+As you learned earlier, BLEU combines n-gram precisions using the **geometric mean**.
 
-By default, BLEU uses **up to 4-grams**, and we typically assign them equal importance:
+In our earlier example, we computed the geometric mean of 1-gram and 2-gram precision equally:
+
+```math
+Geometric\ Mean\ Precision = (p_{1})^{\frac{1}{2}} \cdot (p_{2})^{\frac{1}{2}}
+```
+
+In practice, BLEU uses a **weighted geometric mean**, allowing us to emphasize shorter or longer n-grams.
+
+For example, to give more weight to bigrams:
+
+```math
+Weighted\ Geometric\ Mean\ Precision = (p_{1})^{\frac{1}{3}} \cdot (p_{2})^{\frac{2}{3}}
+```
+
+Just remember that the weights must sum to 1.
+
+By default, BLEU uses **up to 4-grams**, each weighted equally:
 
 ```python
 weights = (0.25, 0.25, 0.25, 0.25)
 ```
 
-These values must sum to 1.
-
-Adjusting them lets you emphasize shorter or longer _n_-grams — for example, giving more weight to bigrams if you care more about short phrase accuracy.
-
 ### Smoothing
 
-Short sentences often lack matches for higher-order _n_-grams (like 3-grams or 4-grams).  
-When that happens, their corresponding precision becomes **zero**, and because BLEU uses the **geometric mean**, the overall score collapses to zero as well — even if the translation is mostly correct.
+Short sentences often lack matches for higher-order n-grams (like 3-grams or 4-grams).  
+When that happens, those precisions become **zero**, and because BLEU uses a **geometric mean**, the overall score collapses to zero — even if the translation is mostly correct.
 
-To avoid this, BLEU applies a **smoothing function** that slightly adjusts zero precisions.  
+To prevent this, BLEU applies a **smoothing function** that slightly adjusts zero precisions.  
 In this example, we use:
 
 ```python
 smoothing = SmoothingFunction().method1
 ```
 
-`method1` adds 1 to both the numerator and denominator for any _n_-gram with zero matches, preventing the final score from being unfairly low for short or partially correct translations.
+`method1` adds 1 to both the numerator and denominator for any n-gram with zero matches, avoiding unfairly low scores for short or nearly correct translations.
 
 ## Wrapping Up
 
-BLEU isn’t perfect — it doesn’t understand meaning or grammar, and it can sometimes penalize perfectly fine paraphrases. But for a quick, automated way to measure translation quality, it’s still one of the best starting points.
+BLEU isn’t perfect — it doesn’t capture meaning or grammar, and it can penalize perfectly fine paraphrases. But as a quick, automated way to measure translation quality, it’s still one of the best starting points.
 
-Modern metrics like [**METEOR**](https://en.wikipedia.org/wiki/METEOR), [**ROUGE**](<https://en.wikipedia.org/wiki/ROUGE_(metric)>), and [**BERTScore**](https://wiki.math.uwaterloo.ca/statwiki/index.php?title=BERTScore:_Evaluating_Text_Generation_with_BERT) build on BLEU’s foundation by considering meaning and context, but BLEU remains the go-to baseline for fast and consistent evaluation.
+Modern metrics like [**METEOR**](https://en.wikipedia.org/wiki/METEOR), [**ROUGE**](<https://en.wikipedia.org/wiki/ROUGE_(metric)>), and [**BERTScore**](https://wiki.math.uwaterloo.ca/statwiki/index.php?title=BERTScore:_Evaluating_Text_Generation_with_BERT) build on BLEU’s foundation by considering meaning and context.
+
+But for my purposes — evaluating translations from my LLM experiments — BLEU was exactly what I needed.
