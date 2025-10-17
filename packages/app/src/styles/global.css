@@ -60,4 +60,11 @@ html {
 .katex-display {
   margin-top: 4rem;
   margin-bottom: 4rem;
+  overflow-x: auto;
+}
+
+@media only screen and (max-width: 600px) {
+  .katex-display {
+    font-size: 0.85rem;
+  }
 }

@@ -39,7 +39,7 @@ function NGrams({ text = 'he is eating tasty apple' }) {
 
   return (
     <div className="py-12 dark:text-white">
-      <p className="flex flex-wrap justify-center text-xl">
+      <p className="not-prose mb-6 flex flex-wrap justify-center text-lg sm:text-xl">
         {text.split(' ').map((word, i) => (
           <span
             key={i}
@@ -54,13 +54,14 @@ function NGrams({ text = 'he is eating tasty apple' }) {
       </p>
       <div className="mx-auto flex w-fit cursor-default flex-col gap-4">
         {[1, 2, 3, 4].map((n) => (
-          <div>
+          <div key={n}>
             <span className="text-sm font-semibold">
               {n}-grams{addLabel(n)}:
             </span>
-            <div className="mt-2 flex gap-2 dark:font-semibold">
+            <div className="mt-2 flex gap-2 text-sm sm:text-base dark:font-semibold">
               {getNGrams(n, text).map((nGram, i) => (
                 <span
+                  key={i}
                   onMouseEnter={() => {
                     const startIndex = i
                     const endIndex = i + n - 1

@@ -50,7 +50,7 @@ function CroppedPrecision({ references, prediction }: CroppedPrecisionProps) {
         <div className="flex-1">
           <p className="mb-2 text-sm opacity-70">References:</p>
           {references.map((ref, i) => (
-            <p className="mb-2 text-lg" key={i}>
+            <p className="mb-2 sm:text-lg" key={i}>
               <span className="opacity-50">{i + 1})</span>{' '}
               <span
                 className={clsx('rounded px-1 py-0.5', {
@@ -65,17 +65,23 @@ function CroppedPrecision({ references, prediction }: CroppedPrecisionProps) {
         </div>
         <div className="flex-1">
           <p className="mb-2 text-sm opacity-70">Prediction:</p>
-          <p className="text-lg">{prediction}</p>
+          <p className="sm:text-lg">{prediction}</p>
         </div>
       </div>
       <div className="mt-8 w-full">
         <table className="w-full table-auto">
-          <thead className="text-sm">
-            <tr className="bg-gray-100 dark:bg-gray-600">
-              <th className="w-52 py-2 pl-4 text-left">{n}-gram</th>
-              <th className="w-20 py-2">Matching References</th>
-              <th className="w-32 py-2">Matched Predicted Count</th>
-              <th className="w-32 py-2">Clipped Count</th>
+          <thead>
+            <tr className="bg-gray-100 text-sm sm:text-base dark:bg-gray-600">
+              <th className="w-52 py-2 pl-4 text-left text-xs sm:text-base">
+                {n}-gram
+              </th>
+              <th className="w-20 py-2 text-xs sm:text-base">
+                Matching References
+              </th>
+              <th className="w-32 py-2 text-xs sm:text-base">
+                Matched Predicted Count
+              </th>
+              <th className="w-32 py-2 text-xs sm:text-base">Clipped Count</th>
             </tr>
           </thead>
           <tbody>
@@ -88,8 +94,9 @@ function CroppedPrecision({ references, prediction }: CroppedPrecisionProps) {
                       <div className="my-0.5">None</div>
                     ) : (
                       <div className="flex justify-center gap-4">
-                        {matchingReferences.map((ref) => (
+                        {matchingReferences.map((ref, i) => (
                           <span
+                            key={i}
                             className={clsx('rounded px-1 py-0.5', {
                               'bg-blue-200 dark:bg-blue-800/80': ref === 1,
                               'bg-orange-200 dark:bg-orange-800/80': ref === 2,
@@ -120,7 +127,7 @@ function CroppedPrecision({ references, prediction }: CroppedPrecisionProps) {
         </table>
       </div>
       <div>
-        <p className="mt-8 text-center text-xl">
+        <p className="mt-8 text-center text-lg sm:text-xl">
           The precision of <span className="font-semibold">{n}-gram</span> is{' '}
           <span className="font-semibold">
             {tableEntries.map((entry) => entry[3]).reduce((a, b) => a + b, 0)}/
