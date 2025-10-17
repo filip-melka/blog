@@ -7,16 +7,16 @@ function NGrams({
 }) {
   return (
     <div className="not-prose py-12">
-      <div className="flex justify-evenly">
+      <div className="flex justify-evenly gap-4">
         <div>
           <span className="text-sm">Reference:</span>
-          <p className="rounded bg-green-100 px-2 py-0.5 text-xl dark:bg-green-800/80">
+          <p className="rounded bg-green-100 px-2 py-0.5 sm:text-xl dark:bg-green-800/80">
             {reference}
           </p>
         </div>
         <div>
           <span className="text-sm">Prediciton:</span>
-          <p className="rounded bg-blue-100 px-2 py-0.5 text-xl dark:bg-blue-800/80">
+          <p className="rounded bg-blue-100 px-2 py-0.5 sm:text-xl dark:bg-blue-800/80">
             {prediction}
           </p>
         </div>
@@ -32,15 +32,15 @@ function NGrams({
           .reduce((a, b) => a + b, 0)
 
         return (
-          <div className="mx-auto mt-10">
+          <div key={n} className="mx-auto mt-10">
             <span className="font-semibold italic">{n + 1}-gram</span>
             <div className="mt-3 flex px-8 text-sm">
               <span className="flex-2">Token</span>
               <span className="flex-1 text-center">Is present</span>
               <span className="flex-1 text-center">Clipped count</span>
             </div>
-            {Object.keys(nGrams).map((token) => (
-              <div className="my-2 flex items-center px-8">
+            {Object.keys(nGrams).map((token, i) => (
+              <div key={i} className="my-2 flex items-center px-8">
                 <span className="flex-2 font-semibold">{token}</span>
                 <span className="flex-1 text-center text-sm">
                   {reference.split(token).length - 1 > 0 ? '✅' : '❌'}
