@@ -6,17 +6,17 @@ function NGrams({
   prediction = 'the cat on the mat',
 }) {
   return (
-    <div className="article-component-container not-prose">
+    <div className="not-prose py-12">
       <div className="flex justify-evenly">
         <div>
           <span className="text-sm">Reference:</span>
-          <p className="rounded bg-green-100 px-2 py-0.5 text-xl">
+          <p className="rounded bg-green-100 px-2 py-0.5 text-xl dark:bg-green-800/80">
             {reference}
           </p>
         </div>
         <div>
           <span className="text-sm">Prediciton:</span>
-          <p className="rounded bg-blue-100 px-2 py-0.5 text-xl">
+          <p className="rounded bg-blue-100 px-2 py-0.5 text-xl dark:bg-blue-800/80">
             {prediction}
           </p>
         </div>
@@ -33,15 +33,16 @@ function NGrams({
 
         return (
           <div className="mx-auto mt-10">
-            <span className="italic">{n + 1}-gram</span>
+            <span className="font-semibold italic">{n + 1}-gram</span>
             <div className="mt-3 flex px-8 text-sm">
-              <span className="flex-3">Token</span>
+              <span className="flex-2">Token</span>
+              <span className="flex-1 text-center">Is present</span>
               <span className="flex-1 text-center">Clipped count</span>
             </div>
             {Object.keys(nGrams).map((token) => (
               <div className="my-2 flex items-center px-8">
                 <span className="flex-2 font-semibold">{token}</span>
-                <span className="flex-1 text-sm">
+                <span className="flex-1 text-center text-sm">
                   {reference.split(token).length - 1 > 0 ? '✅' : '❌'}
                 </span>
                 <span className="flex-1 text-center">
@@ -49,7 +50,7 @@ function NGrams({
                 </span>
               </div>
             ))}
-            <div className="mt-4 flex justify-between bg-gray-100 px-8 py-0.5">
+            <div className="mt-4 flex justify-between bg-gray-100 px-8 py-0.5 dark:bg-gray-600">
               <span className="flex-3">Precision</span>
               <span className="flex-1 text-center font-semibold">
                 {clippedCount} / {totalCount}
