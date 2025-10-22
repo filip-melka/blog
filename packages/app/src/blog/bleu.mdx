@@ -31,9 +31,9 @@ There are several metrics for evaluating machine translation, but one of the ear
 
 According to [Wikipedia](https://en.wikipedia.org/wiki/BLEU):
 
-> BLEU is an algorithm for evaluating the quality of text which has been machine-translated from one natural language to another.
+> BLEU is an algorithm for evaluating the quality of text that has been machine-translated from one natural language to another.
 
-Developed by researchers at IBM in 2001 (Papineni et al., 2002), BLEU was among the first metrics to show a strong correlation with human judgment. Despite its known limitations (which we’ll explore later), it remains widely used today because it’s **simple**, **fast**, and **language-agnostic**.
+Developed by researchers at IBM in 2001 (Papineni et al., 2002), BLEU was among the first metrics to show a strong correlation with human judgment. Despite its known limitations, it remains widely used today because it’s **simple**, **fast**, and **language-agnostic**.
 
 At a high level, you can think of BLEU as a black box that takes in:
 
@@ -42,13 +42,13 @@ At a high level, you can think of BLEU as a black box that takes in:
 
 It then outputs a score between **0 and 1**, known as the **BLEU score**, where higher values indicate better quality.
 
-**Note:** although BLEU is typically computed across an entire corpus of translations (to smooth out sentence-level variability), we’ll be using sentence-level examples for simplicity.
+**Note:** Although BLEU is typically computed across an entire corpus of translations (to smooth out sentence-level variability), we’ll use sentence-level examples for simplicity.
 
 Before diving into how BLEU works, we need to understand two key ideas: **n-grams** and **precision**.
 
 ## What Are N-grams?
 
-If you’ve done any NLP before, you’ve likely come across this term. In short:
+If you’ve done any NLP (Natural Language Processing) before, you’ve likely come across this term. In short:
 
 > An n-gram is a sequence of $n$ consecutive words in a sentence.
 
@@ -66,18 +66,18 @@ And that’s really it! With n-grams covered, let’s move on to **precision**.
 
 **Precision** measures how many words (or _n-grams_) in the **predicted sentence** also appear in the **reference sentence**.
 
-Let's say we have:
+To compute precision for any _n-gram_:
+
+```math
+Precision = \frac{\text{Number of correctly predicted n-grams}}{\text{Total number of predicted n-grams}}
+```
+
+Let's say we want to calculate the precision of 1-grams:
 
 - **Reference:** "the bird flies over the water"
 - **Prediction:** "bird flies across the water"
 
-To compute precision for single words (1-grams):
-
-```math
-Precision = \frac{\text{Number of correctly predicted words}}{\text{Number of total predicted words}}
-```
-
-Here, four of the five predicted words also appear in the reference:
+Four of the five _predicted_ words (1-grams) also appear in the _reference_:
 
 $$
 Precision = \frac{4}{5}
@@ -117,8 +117,8 @@ Let’s see how it works:
 
 Here’s what changes:
 
-1. Each predicted word is compared against _all_ references. If it appears in any reference, it’s counted as correct.
-2. Each word’s count is _clipped_ — it can’t appear more times in the prediction than it does in the references. This prevents the repetition problem.
+1. Each predicted _n-gram_ is compared against _all_ references. If it appears in any reference, it’s counted as correct.
+2. Each _n-gram_’s count is _clipped_ — it can’t appear more times in the prediction than it does in the references. This prevents the repetition problem.
 
 <ClippedPrecision
   client:idle
@@ -186,9 +186,9 @@ e^{(1 - \frac{r}{c})}, & \text{if } c \leq r
 where:
 
 - $c$ = length of the predicted sentence (number of words in the _prediction_)
-- $r$ = length of the reference sentence (number of words in the _target_)
+- $r$ = length of the reference sentence (number of words in the _reference_)
 
-The brevity penalty is never greater than 1 and becomes smaller when the prediction is shorter than the reference.
+The brevity penalty is never greater than 1 and becomes smaller when the _prediction_ is shorter than the _reference_.
 
 In our example, the reference has 7 words and the prediction has 5:
 
@@ -216,7 +216,7 @@ Of course, this is a simplified, sentence-level example.
 
 In practice, BLEU is computed over an entire **corpus**, typically using up to **4-grams**.
 
-Also keep in mind: a score of **0.6–0.7** is already very high. A score near **1.0** is unrealistic and usually signals overfitting or data leakage.
+Also keep in mind: a score of **0.6–0.7** is considered the best you can achieve. A score close to 1 is unrealistic and should raise a flag.
 
 | BLEU Score | Interpretation                                               |
 | ---------- | ------------------------------------------------------------ |
@@ -259,23 +259,23 @@ Let’s unpack the last two.
 
 As you learned earlier, BLEU combines n-gram precisions using the **geometric mean**.
 
-In our earlier example, we computed the geometric mean of 1-gram and 2-gram precision equally:
+In our earlier example, we computed the geometric mean of 1-gram and 2-gram precisions by taking the square root of their product. This can also be written as:
 
 ```math
 Geometric\ Mean\ Precision = (p_{1})^{\frac{1}{2}} \cdot (p_{2})^{\frac{1}{2}}
 ```
 
-In practice, BLEU uses a **weighted geometric mean**, allowing us to emphasize shorter or longer n-grams.
+The exponents ($\frac{1}{2}$) act as weights. In this case both weights are equal. To give us more control, BLEU actually uses a **weighted geometric mean**, allowing us to emphasize shorter or longer _n-grams_.
 
-For example, to give more weight to bigrams:
+For example, to give more weight to _bigrams_ (2-grams):
 
 ```math
 Weighted\ Geometric\ Mean\ Precision = (p_{1})^{\frac{1}{3}} \cdot (p_{2})^{\frac{2}{3}}
 ```
 
-Just remember that the weights must sum to 1.
+You can choose any weights you want, as long as the sum of all weights equals 1.
 
-By default, BLEU uses **up to 4-grams**, each weighted equally:
+By default, BLEU uses **up to 4-grams**, and we decided to use equal weights:
 
 ```python
 weights = (0.25, 0.25, 0.25, 0.25)
@@ -293,7 +293,9 @@ In this example, we use:
 smoothing = SmoothingFunction().method1
 ```
 
-`method1` adds 1 to both the numerator and denominator for any n-gram with zero matches, avoiding unfairly low scores for short or nearly correct translations.
+`method1` adds 1 to both the numerator and denominator for any _n-gram_ with zero matches, avoiding unfairly low scores for short or nearly correct translations.
+
+![method1](./images/bleu/method1.png 'method1')
 
 ## Wrapping Up
 
