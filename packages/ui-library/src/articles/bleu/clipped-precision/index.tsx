@@ -46,7 +46,7 @@ function CroppedPrecision({ references, prediction }: CroppedPrecisionProps) {
 
   return (
     <div className="not-prose py-12">
-      <div className="flex gap-4">
+      <div className="flex gap-2 sm:gap-4">
         <div className="flex-1">
           <p className="mb-2 text-sm opacity-70">References:</p>
           {references.map((ref, i) => (
