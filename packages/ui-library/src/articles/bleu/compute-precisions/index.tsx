@@ -7,16 +7,16 @@ function NGrams({
 }) {
   return (
     <div className="not-prose py-12">
-      <div className="flex justify-evenly gap-4">
+      <div className="flex justify-evenly gap-2 sm:gap-4">
         <div>
           <span className="text-sm">Reference:</span>
-          <p className="rounded bg-green-100 px-2 py-0.5 sm:text-xl dark:bg-green-800/80">
+          <p className="rounded bg-green-100 px-2 py-0.5 sm:text-lg dark:bg-green-800/80">
             {reference}
           </p>
         </div>
         <div>
           <span className="text-sm">Prediciton:</span>
-          <p className="rounded bg-blue-100 px-2 py-0.5 sm:text-xl dark:bg-blue-800/80">
+          <p className="rounded bg-blue-100 px-2 py-0.5 sm:text-lg dark:bg-blue-800/80">
             {prediction}
           </p>
         </div>
