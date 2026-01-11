@@ -3,5 +3,6 @@
     {
       "text": "Use conventional commit message format."
     }
-  ]
+  ],
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
 }
