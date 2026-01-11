@@ -1,0 +1,32 @@
+---
+const tools = [
+  {
+    name: "Astro",
+    url: "https://astro.build/",
+  },
+  {
+    name: "Tailwind",
+    url: "https://tailwindcss.com/",
+  },
+]
+---
+
+<footer
+  class="flex h-20 flex-col items-center justify-center px-4 opacity-70 sm:px-20"
+>
+  <p class="text-center text-xs sm:text-sm">
+    &copy {new Date().getFullYear()} Filip Melka
+  </p>
+  <p class="text-center text-xs sm:text-sm">
+    Made with {
+      tools.map((tool, index) => (
+        <>
+          <a class="inline-block underline" href={tool.url}>
+            {tool.name}
+          </a>
+          {index < tools.length - 1 && <span>, </span>}
+        </>
+      ))
+    }.
+  </p>
+</footer>
