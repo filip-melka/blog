@@ -1,0 +1,12 @@
+---
+import ThemeToggle from "./ThemeToggle.astro"
+---
+
+<nav class="flex h-20 items-center justify-between px-4 sm:px-20">
+  <a href={import.meta.env.BASE_URL}>
+    <h1 class="text-lg font-semibold">Filip's Blog</h1>
+  </a>
+  <div>
+    <ThemeToggle />
+  </div>
+</nav>
