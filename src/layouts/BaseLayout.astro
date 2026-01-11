@@ -1,0 +1,36 @@
+---
+import Footer from "../components/astro/Footer.astro"
+import Navbar from "../components/astro/Navbar.astro"
+import "../styles/global.css"
+const { pageTitle } = Astro.props
+---
+
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle}</title>
+    <script is:inline>
+      const theme = localStorage.getItem("theme")
+
+      if (
+        theme === "dark" ||
+        (theme === null &&
+          !theme &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        localStorage.setItem("theme", "dark")
+        document.documentElement.setAttribute("data-theme", "dark")
+      }
+    </script>
+  </head>
+  <body class="bg-bg text-text">
+    <Navbar />
+    <div class="min-h-[calc(100vh-10rem)]">
+      <slot />
+    </div>
+    <Footer />
+  </body>
+</html>
