@@ -10,6 +10,7 @@
     "format": "npx prettier . --write"
   },
   "dependencies": {
+    "@lucide/astro": "^0.562.0",
     "@tailwindcss/vite": "^4.1.18",
     "astro": "^5.16.8",
     "tailwindcss": "^4.1.18"

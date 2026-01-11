@@ -1,1 +1,15 @@
 @import "tailwindcss";
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+@theme {
+  --color-bg: white;
+  --color-text: rgb(43, 43, 43);
+}
+
+@layer base {
+  [data-theme="dark"] {
+    --color-bg: #17181c;
+    --color-text: #efefef;
+  }
+}

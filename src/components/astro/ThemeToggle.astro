@@ -1,0 +1,22 @@
+---
+import { Sun, Moon } from "@lucide/astro"
+---
+
+<button
+  id="theme-toggle"
+  class="hover:bg-text/5 cursor-pointer rounded-full p-2 text-xl transition-colors duration-100 sm:text-2xl"
+>
+  <Sun class="hidden dark:block" />
+  <Moon class="block dark:hidden" />
+</button>
+
+<script>
+  const themeToggle = document.getElementById("theme-toggle")
+  const htmlElement = document.documentElement
+
+  themeToggle?.addEventListener("click", () => {
+    const newValue = htmlElement.dataset.theme === "light" ? "dark" : "light"
+    htmlElement.setAttribute("data-theme", newValue)
+    localStorage.setItem("theme", newValue)
+  })
+</script>
