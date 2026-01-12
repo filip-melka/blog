@@ -3,7 +3,6 @@ import { Image } from "astro:assets"
 import BaseLayout from "./BaseLayout.astro"
 
 const { frontmatter } = Astro.props
-const slug = frontmatter.slug
 ---
 
 <link
@@ -38,7 +37,7 @@ const slug = frontmatter.slug
         </div>
         <div class="absolute top-0 -right-48 hidden h-full w-40 xl:block">
           <div class="h-full"></div>
-          <a href="#" class="cursor-pointe sticky bottom-20 z-10 block w-fit">
+          <a href="#" class="sticky bottom-20 z-10 block w-fit cursor-pointer">
             <!-- TODO Scroll button -->
             <span>^</span>
           </a>
