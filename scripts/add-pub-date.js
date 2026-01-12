@@ -1,7 +1,7 @@
 import matter from "gray-matter"
 import fs from "fs"
 import { fileURLToPath } from "url"
-import { dirname, join } from "path"
+import { dirname } from "path"
 import { glob } from "glob"
 import path from "path"
 
@@ -12,8 +12,8 @@ const mdxFiles = await glob(path.join(__dirname, "../src/blog/**/*.mdx"))
 
 mdxFiles.forEach((filePath) => addPubDate(filePath))
 
-function addPubDate(path) {
-  const file = fs.readFileSync(path, "utf-8")
+function addPubDate(filePath) {
+  const file = fs.readFileSync(filePath, "utf-8")
   const { data, content } = matter(file)
 
   if (!data.pubDate && !data.isDraft) {
@@ -26,6 +26,6 @@ function addPubDate(path) {
 
     const newFile = matter.stringify(content, data)
 
-    fs.writeFileSync(path, newFile)
+    fs.writeFileSync(filePath, newFile)
   }
 }
