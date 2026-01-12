@@ -1,12 +1,32 @@
 ---
+import { getCollection } from "astro:content"
 import BaseLayout from "../layouts/BaseLayout.astro"
+import BlogPostItem from "../components/astro/BlogPostItem.astro"
+
+const allPosts = await getCollection("blog")
+const currentDate = new Date()
 ---
 
 <BaseLayout pageTitle="Filip's Blog">
   <main class="mx-auto px-4 py-8 pt-4 pb-32 sm:w-[65vw] sm:pt-8 lg:w-[650px]">
     <h2 class="mb-5 text-2xl font-bold sm:mb-8 sm:text-3xl">Articles</h2>
     <ul>
-      <!-- Blog post items -->
+      {
+        allPosts
+          .sort(
+            (a, b) =>
+              (b.data.pubDate?.valueOf() || currentDate.valueOf()) -
+              (a.data.pubDate?.valueOf() || currentDate.valueOf()),
+          )
+          .map((post) => (
+            <BlogPostItem
+              title={post.data.title}
+              id={post.id}
+              description={post.data.description}
+              date={post.data.pubDate}
+            />
+          ))
+      }
     </ul>
   </main>
 </BaseLayout>

@@ -1,0 +1,33 @@
+---
+const { title, description, id, date, isDraft } = Astro.props
+
+function formatDate(date: Date) {
+  return date
+    .toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    })
+    .replace(/(\d+) (\w+) (\d+)/, "$1 $2, $3")
+}
+
+const url = "/blog/posts/" + id
+---
+
+<li class="mb-8">
+  <a href={url}>
+    <h3 class="text-xl font-semibold sm:text-2xl">
+      {title}
+      {
+        isDraft && (
+          <span class="rounded bg-blue-200 px-2 py-1 align-middle text-base text-blue-800">
+            Draft
+          </span>
+        )
+      }
+    </h3>
+    <p class="my-2 text-sm sm:text-base">{description}</p>
+    <span class="text-xs opacity-60 sm:text-sm">{date && formatDate(date)}</span
+    >
+  </a>
+</li>
