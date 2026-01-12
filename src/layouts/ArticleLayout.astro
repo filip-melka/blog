@@ -1,0 +1,49 @@
+---
+import { Image } from "astro:assets"
+import BaseLayout from "./BaseLayout.astro"
+
+const { frontmatter } = Astro.props
+const slug = frontmatter.slug
+---
+
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.css"
+/>
+
+<BaseLayout pageTitle={frontmatter.title}>
+  <main class="px-4 sm:px-12 md:px-20">
+    <article class="pb-20">
+      <figure class="mx-auto max-w-2xl pb-10 xl:max-w-4xl">
+        <Image class="w-full" src={frontmatter.banner} alt={"Banner"} />
+      </figure>
+      <div class="relative mx-auto max-w-2xl">
+        <div class="absolute top-0 -left-48 hidden h-full w-40 xl:block">
+          <aside class="sticky top-20">
+            <!-- TODO Clap button -->
+            <span>👏</span>
+          </aside>
+        </div>
+        <div class="mx-auto max-w-3xl">
+          <h1 class="mb-12 text-4xl font-semibold">
+            {frontmatter.title}
+          </h1>
+          <div class="my-prose">
+            <slot />
+          </div>
+          <div class="border-text/10 mt-12 block border-t pt-8 xl:hidden">
+            <!-- TODO Clap button -->
+            <span>👏</span>
+          </div>
+        </div>
+        <div class="absolute top-0 -right-48 hidden h-full w-40 xl:block">
+          <div class="h-full"></div>
+          <a href="#" class="cursor-pointe sticky bottom-20 z-10 block w-fit">
+            <!-- TODO Scroll button -->
+            <span>^</span>
+          </a>
+        </div>
+      </div>
+    </article>
+  </main>
+</BaseLayout>
