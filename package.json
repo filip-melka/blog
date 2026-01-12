@@ -7,7 +7,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "format": "npx prettier . --write"
+    "format": "npx prettier . --write",
+    "preprocess": "node scripts/add-pub-date.js"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.13",
@@ -17,6 +18,8 @@
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
     "astro": "^5.16.8",
+    "glob": "^13.0.0",
+    "gray-matter": "^4.0.3",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "tailwindcss": "^4.1.18"

@@ -16,6 +16,15 @@ jobs:
     steps:
       - name: Checkout your repository using git
         uses: actions/checkout@v5
+
+      - name: Preprocess
+        run: npm run preprocess
+
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: "feat: add missing pubDate to MDX articles"
+
       - name: Install, build, and upload your site
         uses: withastro/action@v5
 
