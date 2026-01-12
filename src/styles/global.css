@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
@@ -12,4 +13,17 @@
     --color-bg: #17181c;
     --color-text: #efefef;
   }
+}
+
+@layer utilities {
+  .centered {
+    @apply flex items-center justify-center;
+  }
+  .my-prose {
+    @apply prose xl:prose-lg dark:prose-invert prose-figcaption:text-center max-w-none;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
 }

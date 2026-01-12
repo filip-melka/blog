@@ -3,9 +3,9 @@ import { defineConfig } from "astro/config"
 
 import tailwindcss from "@tailwindcss/vite"
 
-import mdx from "@astrojs/mdx";
+import mdx from "@astrojs/mdx"
 
-import react from "@astrojs/react";
+import react from "@astrojs/react"
 
 // https://astro.build/config
 export default defineConfig({
@@ -14,4 +14,7 @@ export default defineConfig({
   },
 
   integrations: [mdx(), react()],
+
+  site: "https://filip-melka.github.io",
+  base: "/blog",
 })
