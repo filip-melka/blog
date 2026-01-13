@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets"
 import BaseLayout from "./BaseLayout.astro"
+import { ScrollUpBtn } from "../components/react/scroll-up-btn"
 
 const { frontmatter } = Astro.props
 ---
@@ -38,8 +39,7 @@ const { frontmatter } = Astro.props
         <div class="absolute top-0 -right-48 hidden h-full w-40 xl:block">
           <div class="h-full"></div>
           <a href="#" class="sticky bottom-20 z-10 block w-fit cursor-pointer">
-            <!-- TODO Scroll button -->
-            <span>^</span>
+            <ScrollUpBtn />
           </a>
         </div>
       </div>
