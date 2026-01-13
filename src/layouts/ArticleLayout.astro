@@ -2,6 +2,7 @@
 import { Image } from "astro:assets"
 import BaseLayout from "./BaseLayout.astro"
 import { ScrollUpBtn } from "../components/react/scroll-up-btn"
+import IssueLink from "../components/astro/IssueLink.astro"
 
 const { frontmatter } = Astro.props
 ---
@@ -31,6 +32,7 @@ const { frontmatter } = Astro.props
           <div class="my-prose">
             <slot />
           </div>
+          <IssueLink title={frontmatter.title} slug={frontmatter.slug} />
           <div class="border-text/10 mt-12 block border-t pt-8 xl:hidden">
             <!-- TODO Clap button -->
             <span>👏</span>
