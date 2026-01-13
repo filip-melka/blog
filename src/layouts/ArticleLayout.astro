@@ -35,9 +35,7 @@ const { frontmatter } = Astro.props
           </div>
           <IssueLink title={frontmatter.title} slug={frontmatter.slug} />
           <div class="border-text/10 mt-12 block border-t pt-8 xl:hidden">
-            <div class="border-text/10 mt-12 block border-t pt-8 xl:hidden">
-              <ClapButton client:idle slug={frontmatter.slug} />
-            </div>
+            <ClapButton client:idle slug={frontmatter.slug} />
           </div>
         </div>
         <div class="absolute top-0 -right-48 hidden h-full w-40 xl:block">

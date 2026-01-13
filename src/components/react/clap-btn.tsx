@@ -40,7 +40,7 @@ export function ClapButton({ slug }: ClapButtonProps) {
         saveClaps={saveAddedClaps}
         addClap={() => setCount((currentCount) => currentCount + 1)}
       />
-      {state === State.loading ? <Sceleton /> : <Count count={count} />}
+      {state === State.loading ? <Skeleton /> : <Count count={count} />}
     </div>
   )
 }
@@ -116,7 +116,7 @@ function Count({ count }: CountProps) {
   return <div className="text-lg">{count}</div>
 }
 
-function Sceleton() {
+function Skeleton() {
   return <div className="skeleton h-6 w-12"></div>
 }
 
