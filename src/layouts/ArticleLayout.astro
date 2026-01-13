@@ -2,6 +2,9 @@
 import { Image } from "astro:assets"
 import BaseLayout from "./BaseLayout.astro"
 import { ScrollUpBtn } from "../components/react/scroll-up-btn"
+import IssueLink from "../components/astro/IssueLink.astro"
+import { ClapButton } from "@components/react/clap-btn"
+import { fetchClaps, saveClaps } from "../lib/supabase"
 
 const { frontmatter } = Astro.props
 ---
@@ -20,8 +23,7 @@ const { frontmatter } = Astro.props
       <div class="relative mx-auto max-w-2xl">
         <div class="absolute top-0 -left-48 hidden h-full w-40 xl:block">
           <aside class="sticky top-20">
-            <!-- TODO Clap button -->
-            <span>👏</span>
+            <ClapButton client:load slug={frontmatter.slug} />
           </aside>
         </div>
         <div class="mx-auto max-w-3xl">
@@ -31,9 +33,9 @@ const { frontmatter } = Astro.props
           <div class="my-prose">
             <slot />
           </div>
+          <IssueLink title={frontmatter.title} slug={frontmatter.slug} />
           <div class="border-text/10 mt-12 block border-t pt-8 xl:hidden">
-            <!-- TODO Clap button -->
-            <span>👏</span>
+            <ClapButton client:idle slug={frontmatter.slug} />
           </div>
         </div>
         <div class="absolute top-0 -right-48 hidden h-full w-40 xl:block">

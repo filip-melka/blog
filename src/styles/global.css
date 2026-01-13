@@ -23,6 +23,29 @@
   .my-prose {
     @apply prose xl:prose-lg dark:prose-invert prose-figcaption:text-center max-w-none;
   }
+  .skeleton {
+    @apply relative overflow-hidden rounded-md bg-gray-200 dark:bg-gray-700;
+  }
+  .skeleton::after {
+    content: "";
+    @apply absolute top-0 left-0 h-full w-full;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent
+    );
+    animation: shimmer 1.5s infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
 }
 
 html {

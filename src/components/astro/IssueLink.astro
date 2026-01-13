@@ -1,0 +1,13 @@
+---
+const { title, slug } = Astro.props
+
+const issueLink = `https://github.com/filip-melka/blog/issues/new?title=Correction%20for%20${encodeURIComponent(title)}%20article&labels=article&body=Page:%20https://filip-melka.github.io/blog/posts/${encodeURIComponent(slug)}%0A%0ADescribe%20the%20problem:`
+---
+
+<p class="mt-20 text-right opacity-70">
+  Notice a typo or a mistake? Feel free to <a
+    class="underline"
+    target="_blank"
+    href={issueLink}>open an issue</a
+  >.
+</p>
