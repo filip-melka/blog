@@ -6,6 +6,7 @@
 @theme {
   --color-bg: white;
   --color-text: rgb(43, 43, 43);
+  --color-codeblock: rgb(40, 42, 54);
 }
 
 @layer base {
