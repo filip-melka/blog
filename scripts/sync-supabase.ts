@@ -33,6 +33,7 @@ export async function ensureArticleExists(data: { [key: string]: any }) {
   if (existing) return
 
   if (fetchError && fetchError.code !== "PGRST116") {
+    // PGRST116 = "no rows returned"
     throw fetchError
   }
 
