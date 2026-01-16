@@ -8,7 +8,6 @@
     "preview": "astro preview",
     "astro": "astro",
     "format": "npx prettier . --write",
-    "preprocess": "node scripts/add-pub-date.js",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
@@ -21,6 +20,7 @@
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
     "astro": "^5.16.8",
+    "dotenv": "^17.2.3",
     "glob": "^13.0.0",
     "gray-matter": "^4.0.3",
     "lucide-react": "^0.562.0",
@@ -34,6 +34,7 @@
     "prettier": "^3.7.4",
     "prettier-plugin-astro": "0.14.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
-    "storybook": "^10.1.11"
+    "storybook": "^10.1.11",
+    "tsx": "^4.21.0"
   }
 }

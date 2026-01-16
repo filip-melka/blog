@@ -1,9 +1,23 @@
 import { createClient } from "@supabase/supabase-js"
 
-const supabase = createClient(
-  import.meta.env.PUBLIC_SUPABASE_URL,
-  import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
-)
+function getEnv(key: string): string | undefined {
+  if (typeof process !== "undefined" && process.env[key])
+    return process.env[key]
+  return typeof import.meta !== "undefined"
+    ? (import.meta as any).env?.[key]
+    : undefined
+}
+
+const SUPABASE_URL = getEnv("PUBLIC_SUPABASE_URL")
+const SUPABASE_ANON_KEY = getEnv("PUBLIC_SUPABASE_ANON_KEY")
+
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  throw new Error(
+    "Missing Supabase environment variables. Set PUBLIC_SUPABASE_URL and PUBLIC_SUPABASE_ANON_KEY.",
+  )
+}
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 export async function fetchClaps(slug: string): Promise<number | Error> {
   if (import.meta.env.MODE === "mock") {
