@@ -2,9 +2,12 @@
 import { Moon, Sun } from '@lucide/astro'
 ---
 
-<button id="theme-toggle">
-  <Moon class="dark:hidden" />
-  <Sun class="hidden dark:block" />
+<button
+  id="theme-toggle"
+  class="hover:bg-text/5 rounded-full p-1 transition-colors"
+>
+  <Moon class="dark:hidden" size={20} />
+  <Sun class="hidden dark:block" size={20} />
 </button>
 
 <script>
