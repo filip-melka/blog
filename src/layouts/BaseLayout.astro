@@ -1,4 +1,6 @@
 ---
+import Footer from '../components/Footer.astro'
+import Header from '../components/Header.astro'
 import ThemeToggle from '../components/ThemeToggle.astro'
 import '../styles/global.css'
 ---
@@ -21,7 +23,10 @@ import '../styles/global.css'
     </script>
   </head>
   <body class="bg-bg text-text">
-    <ThemeToggle />
-    <slot />
+    <Header />
+    <div class="min-h-[calc(100dvh-12rem)]">
+      <slot />
+    </div>
+    <Footer />
   </body>
 </html>

@@ -1,7 +1,14 @@
 ---
+import ArticleItem from '../components/ArticleItem.astro'
 import BaseLayout from '../layouts/BaseLayout.astro'
 ---
 
 <BaseLayout>
-  <h1 class="text-2xl font-bold text-blue-800">My Astro Site</h1>
+  <main class="mx-auto w-xl py-12">
+    <h2 class="text-lg font-semibold">Writing</h2>
+    <div class="mt-4 flex flex-col gap-10">
+      <ArticleItem />
+      <ArticleItem />
+    </div>
+  </main>
 </BaseLayout>
