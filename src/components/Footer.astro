@@ -1,0 +1,24 @@
+---
+const stack: [string, string][] = [
+  ['Astro', 'https://astro.build'],
+  ['Tailwind', 'https://tailwindcss.com'],
+]
+---
+
+<footer
+  class="text-text/60 flex h-28 flex-col items-center justify-center text-sm"
+>
+  <p>© Filip Melka 2026</p>
+  <p>
+    Made using {
+      stack.map(([name, link], i) => (
+        <>
+          <a class="underline" href={link}>
+            {name}
+          </a>
+          {i != stack.length - 1 && <span>, </span>}
+        </>
+      ))
+    }.
+  </p>
+</footer>
