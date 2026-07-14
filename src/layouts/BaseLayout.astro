@@ -1,7 +1,6 @@
 ---
 import Footer from '../components/Footer.astro'
 import Header from '../components/Header.astro'
-import ThemeToggle from '../components/ThemeToggle.astro'
 import '../styles/global.css'
 ---
 
@@ -13,6 +12,10 @@ import '../styles/global.css'
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <title>Astro</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.css"
+    />
     <script is:inline>
       document.documentElement.classList.toggle(
         'dark',
