@@ -1,10 +1,17 @@
 ---
-import { getCollection } from 'astro:content'
+import { getCollection, render } from 'astro:content'
 import ArticleItem from '../components/ArticleItem.astro'
 import BaseLayout from '../layouts/BaseLayout.astro'
 
-const articles = (await getCollection('articles')).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+const articles = await Promise.all(
+  (await getCollection('articles')).map(async (article) => {
+    const { remarkPluginFrontmatter } = await render(article)
+    return { ...article, minutesRead: remarkPluginFrontmatter.minutesRead }
+  }),
+).then((collection) =>
+  collection.sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+  ),
 )
 ---
 
@@ -19,6 +26,7 @@ const articles = (await getCollection('articles')).sort(
               title={article.data.title}
               description={article.data.description}
               pubDate={article.data.pubDate}
+              minutesRead={article.minutesRead}
             />
           </a>
         ))

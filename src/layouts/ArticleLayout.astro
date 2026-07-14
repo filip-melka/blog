@@ -1,7 +1,7 @@
 ---
 import BaseLayout from './BaseLayout.astro'
 
-const { title, pubDate } = Astro.props
+const { title, pubDate, minutesRead } = Astro.props
 
 const formattedPubDate = pubDate.toLocaleDateString('en-GB', {
   day: 'numeric',
@@ -15,7 +15,12 @@ const formattedPubDate = pubDate.toLocaleDateString('en-GB', {
     <div class="bg-text/50 aspect-video w-full"></div>
     <div class="mt-8 md:px-6 lg:px-20">
       <h1 class="text-3xl font-semibold">{title}</h1>
-      <p class="text-text/70 mt-2 text-sm">{formattedPubDate}</p>
+      <p class="text-text/70 mt-2 flex items-center gap-4 text-sm">
+        <span>
+          {formattedPubDate}
+        </span>
+        <span>{minutesRead}</span>
+      </p>
       <article class="prose mt-8">
         <slot />
       </article>
