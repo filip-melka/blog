@@ -9,12 +9,9 @@
 }
 
 @layer theme {
-  :root,
-  :host {
-    @variant dark {
-      --color-bg: #202020;
-      --color-text: #f0f0f0;
-    }
+  .dark {
+    --color-bg: #202020;
+    --color-text: #f0f0f0;
   }
 }
 
