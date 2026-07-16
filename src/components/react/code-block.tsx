@@ -19,7 +19,7 @@ export function CodeBlock({ lang, children }: CodeBlockProps) {
 
   return (
     <div className="not-prose my-6 overflow-hidden rounded-lg border border-white/10 bg-[#24292e] px-4 py-2">
-      <div className="px-3text-xs flex items-center justify-between bg-[#24292e] text-sm text-[#e1e4e8]">
+      <div className="flex items-center justify-between bg-[#24292e] px-3 text-xs text-[#e1e4e8]">
         <span className="font-mono text-[#e1e4e8]/60">{lang}</span>
         <button
           type="button"
@@ -42,7 +42,7 @@ export function CodeBlock({ lang, children }: CodeBlockProps) {
       </div>
       <div
         ref={contentRef}
-        className="overflow-x-auto text-sm [&_pre]:m-0 [&_pre]:p-3"
+        className="overflow-x-auto text-sm [&_.line]:inline-block [&_.line]:w-full [&_.line]:px-3 [&_.line.highlighted]:bg-white/10 [&_pre]:m-0 [&_pre]:py-3"
       >
         {children}
       </div>
