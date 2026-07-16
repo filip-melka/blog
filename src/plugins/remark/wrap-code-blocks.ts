@@ -21,12 +21,17 @@ export function remarkWrapCodeBlocks() {
 
       wrapped = true
 
+      const isCollapsible = /\bcollapse\b/.test(node.meta ?? '')
+
       parent.children[index] = {
         type: 'mdxJsxFlowElement',
         name: COMPONENT_NAME,
         attributes: [
           { type: 'mdxJsxAttribute', name: 'lang', value: node.lang ?? 'text' },
           { type: 'mdxJsxAttribute', name: 'client:visible', value: null },
+          ...(isCollapsible
+            ? [{ type: 'mdxJsxAttribute', name: 'collapsible', value: null }]
+            : []),
         ],
         children: [node],
       } as any
