@@ -3,13 +3,30 @@ import { defineConfig } from 'astro/config'
 
 import tailwindcss from '@tailwindcss/vite'
 
-import mdx from '@astrojs/mdx';
+import mdx from '@astrojs/mdx'
+import { unified } from '@astrojs/markdown-remark'
+import { remarkReadingTime } from './src/plugins/remark/reading-time.ts'
+import { remarkWrapCodeBlocks } from './src/plugins/remark/wrap-code-blocks.ts'
+import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
+import { transformerMetaHighlight } from '@shikijs/transformers'
+
+import react from '@astrojs/react'
 
 // https://astro.build/config
 export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+  markdown: {
+    shikiConfig: {
+      transformers: [transformerMetaHighlight()],
+    },
+    processor: unified({
+      remarkPlugins: [remarkReadingTime, remarkMath, remarkWrapCodeBlocks],
+      rehypePlugins: [rehypeKatex],
+    }),
+  },
 
-  integrations: [mdx()],
+  integrations: [mdx(), react()],
 })

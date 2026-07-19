@@ -1,5 +1,5 @@
 ---
-const { title, description, pubDate } = Astro.props
+const { title, description, pubDate, minutesRead } = Astro.props
 
 const formattedPubDate = pubDate.toLocaleDateString('en-GB', {
   day: 'numeric',
@@ -15,6 +15,6 @@ const formattedPubDate = pubDate.toLocaleDateString('en-GB', {
   </p>
   <div class="text-text/70 flex gap-8 text-xs sm:text-sm">
     <span>{formattedPubDate}</span>
-    <span>8 min read</span>
+    <span>{minutesRead}</span>
   </div>
 </div>

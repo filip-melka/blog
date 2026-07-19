@@ -1,7 +1,8 @@
 ---
+import { Image } from 'astro:assets'
 import BaseLayout from './BaseLayout.astro'
 
-const { title, pubDate } = Astro.props
+const { title, pubDate, minutesRead, banner } = Astro.props
 
 const formattedPubDate = pubDate.toLocaleDateString('en-GB', {
   day: 'numeric',
@@ -12,11 +13,16 @@ const formattedPubDate = pubDate.toLocaleDateString('en-GB', {
 
 <BaseLayout>
   <main class="mx-auto w-11/12 pt-4 pb-12 md:w-2xl lg:w-3xl lg:pt-8">
-    <div class="bg-text/50 aspect-video w-full"></div>
+    <Image src={banner} alt="banner" class="w-full rounded md:rounded-md" />
     <div class="mt-8 md:px-6 lg:px-20">
       <h1 class="text-3xl font-semibold">{title}</h1>
-      <p class="text-text/70 mt-2 text-sm">{formattedPubDate}</p>
-      <article class="prose mt-8">
+      <p class="text-text/70 mt-2 flex items-center gap-4 text-sm">
+        <span>
+          {formattedPubDate}
+        </span>
+        <span>{minutesRead}</span>
+      </p>
+      <article class="prose mt-8 max-w-none">
         <slot />
       </article>
     </div>

@@ -1,0 +1,152 @@
+---
+title: Is 1 Larger Than 0.999...?
+description: I used to think 0.999... was just a hair short of 1 - turns out I was wrong. Let's see all the different ways to prove they're actually the exact same number, and then use the same idea to solve Zeno's paradox.
+pubDate: 2025-07-19
+banner: './banners/is-1-larger-than-0999.png'
+---
+
+import { ComparisonReveal } from './components/comparison-reveal'
+import { ZenoParadoxWidget } from './components/zeno-paradox-widget'
+
+Let's go back in time to primary school, to those exercises with comparison symbols, where you had to compare two numbers and fill in the right sign:
+
+<ComparisonReveal client:visible left="3" right="5" sign="<" />
+
+<ComparisonReveal client:visible left="8" right="8" sign="=" />
+
+<ComparisonReveal client:visible left="2" right="1" sign=">" />
+
+Now that you've had a nice trip down memory lane, here's one more for you:
+
+<ComparisonReveal client:visible left="0.999..." right="1" sign="=" />
+
+This might seem a bit unintuitive. We're saying that $0.999\dots$ (repeating forever) and $1$ aren't two different numbers sitting close to each other - they're the exact same number.
+
+## The Proof
+
+If you don't believe what you've just read, I don't blame you. So let's prove it.
+
+### The algebra trick
+
+Let's define:
+
+$$
+	x=0.999\dots
+$$
+
+If we multiply both sides by 10, we get:
+
+$$
+	10x=9.999\dots
+$$
+
+Now we'll subtract $x$ from the left side and $0.999\dots$ from the right side - we can do this without any trouble, since by our definition they're the same thing:
+
+$$
+	10x-x=9.999\dots-0.999\dots
+$$
+
+$$
+	9x=9
+$$
+
+Divide both sides by 9, and we get:
+
+$$
+	x=1
+$$
+
+So by our definition of $x$, it must be true that:
+
+$$
+	0.999\dots=1
+$$
+
+There it is: a concrete proof that $0.999\dots$ and $1$ are the same number.
+
+But you might still not be fully convinced, so let's try another way to prove it.
+
+### The fraction trick
+
+We know that one third is:
+
+$$
+	\frac{1}{3}=0.333\dots
+$$
+
+Multiply both sides by 3:
+
+$$
+	\frac{3}{3}=3\cdot 0.333\dots
+$$
+
+And we get:
+
+$$
+	1=0.999\dots
+$$
+
+We can even add any real number to both sides - say, 4:
+
+$$
+	5=4.999\dots
+$$
+
+Which reveals something rather fun about decimal notation: every terminating decimal has a "twin" written as an infinite string of 9s. $2=1.999\dots$, $0.7=0.6999\dots$, and so on, forever.
+
+### The "name the gap" argument
+
+If $0.999\dots$ were less than 1, there'd have to be some positive gap between them - some tiny number you could add to $0.999\dots$ to reach 1.
+
+So if you think one number is larger, try naming that gap. Pick something tiny, like 0.000000001. Unfortunately, $0.999\dots$ already beats it - it's already closer to 1 than that. Pick something even tinier, and the same thing happens, every time. No matter how small a number you name, $0.999\dots$ has already closed the distance. There's no room left for a gap, which means there's no gap at all - they're the same number.
+
+## Geometric Series And Lazy Zeno
+
+Another way to write $0.999\dots$ is:
+
+$$
+	0.999\dots=\frac{9}{10}+\frac{9}{100}+\frac{9}{1000}+\dots
+$$
+
+We're adding up infinitely many terms, where each one is $\frac{1}{10}$ of the one before it. This is called a **geometric series**, and it has a well-known formula. We won't derive it here, but we'll happily use it: if you start with a term $a$ and each following term is the previous one multiplied by a ratio $r$ (with $r$ between $-1$ and $1$), the whole infinite sum works out to:
+
+$$
+	S=\frac{a}{1-r}
+$$
+
+Plugging in our numbers ($a=\frac{9}{10}$, $r=\frac{1}{10}$):
+
+$$
+	S=\frac{\frac{9}{10}}{1-\frac{1}{10}}=\frac{\frac{9}{10}}{\frac{9}{10}}=1
+$$
+
+So $0.999\dots$, viewed as a sum stretching out to infinity, still lands exactly on 1. Which brings us to Zeno.
+
+### Zeno of Elea
+
+Zeno of Elea was (supposedly) an ancient Greek philosopher who lived around the 5th century BCE in Elea, a Greek colony in southern Italy.
+
+One morning Zeno woke up parched. His nightstand, holding a cup of water with half a tablespoon of lime juice already stirred in, sat a single meter away from him. Being a philosopher, he couldn't just reach for it - he had to wonder whether reaching it was even possible. To get to the table, he reasoned, he'd first have to cover half the distance, leaving half remaining. Then half of that half, leaving a quarter. Then half of that, leaving an eighth. And so on, forever - no matter how much distance he'd already closed, there was always the same fraction of it still waiting to be closed.
+
+<ZenoParadoxWidget client:visible />
+
+This is **Zeno's paradox** (and for the record, I have no evidence he actually drank lime water in the mornings - but it's hard to be certain of anything with these ancient philosophers).
+
+Let's show Zeno where he went wrong. Unlike Zeno, we know this is a geometric series with $a=\frac{1}{2}$ and $r=\frac{1}{2}$, and we also know how to sum it:
+
+$$
+	S=\frac{\frac{1}{2}}{1-\frac{1}{2}}=\frac{\frac{1}{2}}{\frac{1}{2}}=1
+$$
+
+The sum equals 1, so Zeno would in fact reach his table in a finite amount of time and could've had his drink. So where did his reasoning break down? It's not a silly argument, but it conflates two separate things:
+
+- Infinite steps vs. infinite distance
+- Infinite steps vs. infinite time
+
+The first mistake is assuming that summing infinitely many pieces of distance must add up to an infinite total distance - which, as the geometric series shows, simply isn't true (in this case it sums to 1).
+
+The second is assuming that infinitely many steps must take infinitely long. But if Zeno is walking at a constant speed, each step takes proportionally less time than the last - step two takes half as long as step one, step three a quarter as long, and so on. Time is a geometric series too, and it converges to a finite total just like the distance does. So Zeno completes infinitely many steps in a perfectly ordinary, finite stretch of time - and his lime water was never in any real danger.
+
+## Conclusion
+
+In this short piece, we showed that $0.999\dots$ and $1$ are the exact same number - first with an algebraic trick, then with a fraction trick, then with a "name the gap" argument. Along the way we picked up the geometric series formula, which let us settle Zeno's paradox.
