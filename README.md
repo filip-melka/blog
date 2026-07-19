@@ -16,6 +16,8 @@ The interesting part of this repo is how articles go from draft to published, wi
 3. **Let subagents build them.** A custom subagent, `blog-interactive-component-builder` (`.claude/agents/`), pulls the design from Penpot via the Penpot MCP: it exports the frames as images, reads exact colors/spacing/typography through the Penpot API, reads the comment threads as the behavior spec, and then implements the component in React + Tailwind along with its Storybook story.
 4. **Wire everything together** with the `/wire-interactive-components` skill (`.claude/skills/`). It scans an article for placeholder lines, matches each one to its Penpot board, launches builder subagents in parallel, and replaces the placeholders with imports of the finished components.
 
+A custom Claude Code hook (`.claude/settings.json`) keeps all of this consistent: after every file Claude edits or writes, a `PostToolUse` hook runs Prettier on that file, so generated components and articles are always formatted correctly.
+
 ## Custom remark plugins
 
 Markdown processing is extended with two plugins in `src/plugins/remark/`:
@@ -50,5 +52,6 @@ src/
 └── styles/              # global styles (Tailwind)
 .claude/
 ├── agents/              # blog-interactive-component-builder subagent
-└── skills/              # wire-interactive-components skill
+├── skills/              # wire-interactive-components skill
+└── settings.json        # hooks (Prettier on every edited file)
 ```
