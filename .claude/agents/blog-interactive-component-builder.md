@@ -14,7 +14,10 @@ You build interactive React components used inside this blog's Astro/MDX article
 3. **Read Penpot comments — this is the primary spec channel.** The user gives build instructions (what the component does, how it animates, what it computes) as Penpot comment threads anchored near/on the target board, not just in chat. Fetch them via `execute_code`:
    ```js
    const page = penpot.currentPage
-   const threads = await page.findCommentThreads({ onlyYours: false, showResolved: true })
+   const threads = await page.findCommentThreads({
+     onlyYours: false,
+     showResolved: true,
+   })
    const results = []
    for (const thread of threads) {
      const comments = await thread.findComments()
@@ -23,7 +26,10 @@ You build interactive React components used inside this blog's Astro/MDX article
        boardId: thread.board?.id,
        boardName: thread.board?.name,
        position: thread.position,
-       comments: comments.map(c => ({ user: c.user?.name, content: c.content })),
+       comments: comments.map((c) => ({
+         user: c.user?.name,
+         content: c.content,
+       })),
      })
    }
    return results
@@ -66,15 +72,15 @@ This gives Tailwind classes `bg-bg` / `text-bg` and `bg-text` / `text-text`, plu
 - Map the design's primary near-black/near-white foreground and filled elements (e.g. a dark "pill" or button) to `bg-text` / `text-bg` (and the inverse for text on it) — because `--color-text` and `--color-bg` swap in dark mode, a filled element built from these tokens automatically re-inverts correctly instead of staying a literal dark box in dark mode.
 - Map subtle borders/dividers/secondary text (grays in the Penpot design) to opacity variants of `text-text` (e.g. `border-text/10`, `text-text/40`) rather than literal gray hexes, so contrast is preserved in both themes.
 - `code-block.tsx` is an exception worth noting, not a pattern to copy: it intentionally hardcodes a dark editor-chrome look (`bg-[#24292e]`) in both themes, because it's meant to always look like a code editor. Only follow that literal-hex approach when a component is deliberately theme-invariant like that; for everything else, use the `bg`/`text` tokens above.
-- Border radius: the widget's own outer container/board — the root element that holds the whole demo — should not be rounded, regardless of what the Penpot board itself uses. This site's page-level chrome uses minimal/no rounding (see `ArticleLayout.astro`'s `rounded`/`rounded-md`), and a demo widget sits in the article like another block-level element, so its outer edge should match that flat convention. Elements *inside* the widget (buttons, chips/tokens/pills, cards) should keep whatever radius the Penpot design specifies for them — reproduce those literal values (e.g. `rounded-[10px]`) faithfully, since that's real component-level design detail, not page chrome.
-- Outer container border/stroke: by default, don't give the root element a visible border/stroke, even if the Penpot board has one — it should blend into the surrounding article rather than reading as a boxed-off card. Only add a stroke on the outer container if the article prose, a Penpot comment, or the user explicitly asks for one. This mirrors the border-radius rule above: the *outer* container follows the article's flat page chrome by default, while *inner* elements (buttons, tokens, dividers) keep whatever borders the Penpot design specifies.
+- Border radius: the widget's own outer container/board — the root element that holds the whole demo — should not be rounded, regardless of what the Penpot board itself uses. This site's page-level chrome uses minimal/no rounding (see `ArticleLayout.astro`'s `rounded`/`rounded-md`), and a demo widget sits in the article like another block-level element, so its outer edge should match that flat convention. Elements _inside_ the widget (buttons, chips/tokens/pills, cards) should keep whatever radius the Penpot design specifies for them — reproduce those literal values (e.g. `rounded-[10px]`) faithfully, since that's real component-level design detail, not page chrome.
+- Outer container border/stroke: by default, don't give the root element a visible border/stroke, even if the Penpot board has one — it should blend into the surrounding article rather than reading as a boxed-off card. Only add a stroke on the outer container if the article prose, a Penpot comment, or the user explicitly asks for one. This mirrors the border-radius rule above: the _outer_ container follows the article's flat page chrome by default, while _inner_ elements (buttons, tokens, dividers) keep whatever borders the Penpot design specifies.
 - After building, sanity-check the component's classes by eye for both themes (e.g. toggle `.dark` on `<html>` while viewing the Storybook story) rather than assuming the Penpot-derived literal colors work in both.
 
 ### Fixed footprint — the component lives inside article prose, not on its own page
 
 These widgets are embedded inline between paragraphs of a reading article. If a widget's width or height changes as the reader interacts with it (pushing/popping items, stepping through an algorithm, an error message appearing), the paragraphs below it visibly jump, which reads as broken. The whole component must occupy a constant footprint across every state it can be in, from mount through every interaction to completion.
 
-- **Growing/shrinking lists (stacks, queues, token rows that shrink as steps progress):** don't let the DOM only render however many items currently exist — that makes container height/width a function of interaction state. Instead render a fixed number of slots and fill unused ones with an empty/dashed placeholder, or reserve a `min-height`/`min-width` sized for the *maximum* extent this specific instance can reach (simulate the algorithm ahead of time over the given input if you need to compute that maximum) and anchor content to one edge (e.g. `justify-end` so a stack visually grows upward within its reserved space, as `min-h-[210px]` + `justify-end` does for the Shunting-Yard Widget's operator stack) so content doesn't jump around inside the reserved box either.
+- **Growing/shrinking lists (stacks, queues, token rows that shrink as steps progress):** don't let the DOM only render however many items currently exist — that makes container height/width a function of interaction state. Instead render a fixed number of slots and fill unused ones with an empty/dashed placeholder, or reserve a `min-height`/`min-width` sized for the _maximum_ extent this specific instance can reach (simulate the algorithm ahead of time over the given input if you need to compute that maximum) and anchor content to one edge (e.g. `justify-end` so a stack visually grows upward within its reserved space, as `min-h-[210px]` + `justify-end` does for the Shunting-Yard Widget's operator stack) so content doesn't jump around inside the reserved box either.
 - **Stack/queue-style demo components specifically:** cap the max item count at **4** by default (unless told otherwise) — small enough to render at a constant, fixed-slot footprint with no scrolling affordance needed.
 - **Variable-length text (explanations, step banners, toast/status messages):** reserve a `min-height` sized for the longest line count you expect (usually 1–2 lines) rather than letting the text node appear/disappear (conditional rendering) or wrap unpredictably between short and long strings. If a message is merely absent some of the time (e.g. a "Popped 15 from the stack" toast before any pop has happened), keep the container always mounted at its reserved size and only toggle the content/visibility inside it, not the container's presence.
 - Test this by driving the component through its full interaction range (empty → max, or step 0 → last step) and confirming the outer bounding box never moves — don't just eyeball the default state.
@@ -119,7 +125,7 @@ Use the `Articles/` title prefix (not `React/`, which is reserved for the generi
 
 You never edit the article's `.mdx` file yourself — not the import, not the placeholder line. This lets multiple instances of you build different components for the same article in parallel without stepping on each other's edits to a shared file. Wiring the components into the article is done afterwards, once, by whoever dispatched you.
 
-You may still *read* the target article (and should — use it to confirm you're building the right component, e.g. by matching a placeholder's parenthesized name like `-> interactive demo (Stack Visualizer)` against the Penpot board you were given) and to infer sensible default props from the surrounding prose. But treat the `.mdx` file as read-only.
+You may still _read_ the target article (and should — use it to confirm you're building the right component, e.g. by matching a placeholder's parenthesized name like `-> interactive demo (Stack Visualizer)` against the Penpot board you were given) and to infer sensible default props from the surrounding prose. But treat the `.mdx` file as read-only.
 
 Instead, end your final report with a structured wiring summary the dispatcher can act on directly:
 
@@ -137,6 +143,7 @@ Instead, end your final report with a structured wiring summary the dispatcher c
 
 - Run `npx prettier --write` on the new component/story files (not the article — you didn't touch it).
 - Run `npx astro check` (or `npx tsc --noEmit` if that's not available) to catch type errors before finishing.
+- Run verification commands plainly in the foreground and wait for them (e.g. `npx storybook build --quiet`) — no `(cmd &)` subshells, no `sleep`-and-poll, no redirecting output to log files. Wrapped commands can't be statically analyzed by the permission system, so they force a manual approval prompt that a plain invocation of the same command would not. If a command is genuinely too slow to wait for in the foreground, use the Bash tool's `run_in_background` option instead of shell `&`.
 
 ## What not to do
 
@@ -145,3 +152,4 @@ Instead, end your final report with a structured wiring summary the dispatcher c
 - Don't add component library dependencies; this repo has no UI kit beyond Tailwind + lucide-react.
 - Don't modify `.storybook/main.ts` or `src/content.config.ts` — neither needs changes for this workflow.
 - Don't edit the article `.mdx` file at all (Step 5) — not the import, not the placeholder. Report the wiring info in your final message instead; another process applies it.
+- Don't wrap shell commands in subshells, `&` backgrounding, or output redirection to log files (Step 6) — keep them plain so the permission system can analyze them without prompting the user.

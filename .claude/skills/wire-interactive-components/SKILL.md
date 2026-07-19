@@ -10,15 +10,17 @@ allowed-tools: Read, Edit, Grep, Glob, Agent, AskUserQuestion, Bash, mcp__claude
 Turns an article's `-> ...` placeholder lines into working interactive components, using an already-prepared Penpot design as the source of truth. This orchestrates the `blog-interactive-component-builder` agent — it does not implement components itself.
 
 ## Trigger
+
 `/wire-interactive-components <path-to-mdx>`
 
 If no path is given, ask which article under `src/articles/*.mdx` to process.
 
 ## Step 1 — Find the placeholders
 
-Read the target `.mdx` file. A placeholder is a line whose entire content (after trimming) starts with `->`, e.g. `-> examples` or `-> interactive demo (Stack Visualizer)`. Ignore any `->` that appears inside a fenced code block (` ``` `) or inside inline code — those are arrow functions, not placeholders.
+Read the target `.mdx` file. A placeholder is a line whose entire content (after trimming) starts with `-> interactive component` or `-> static component`, e.g. `-> interactive component` or `-> interactive component (Stack Visualizer)`. Ignore any other `->` line (e.g. `-> examples`, `-> image`) — those are placeholders for something else and out of scope for this skill. Also ignore any `->` that appears inside a fenced code block (` ``` `) or inside inline code — those are arrow functions, not placeholders.
 
 For each placeholder, record:
+
 - Its exact line text and line number (needed later to locate and replace it verbatim).
 - Local context: the nearest preceding heading, and the paragraph(s) immediately before/after it. This is what you'll use to infer what the component should demonstrate when the placeholder doesn't name it explicitly.
 - Any explicit name hint in parentheses, if present (e.g. `(Stack Visualizer)`).
@@ -45,6 +47,7 @@ Produce a mapping table (placeholder → board) before moving on, and show it br
 For each matched (placeholder, board) pair, spawn one `Agent` call with `subagent_type: "blog-interactive-component-builder"`. Launch all of them **in a single message** (multiple tool calls) so they run in parallel — they don't touch each other's files or the article, so there's no conflict.
 
 Each subagent's prompt must be self-contained (it starts with no memory of this conversation) and should include:
+
 - The absolute path to the target article.
 - The exact Penpot board name (and page, if the file has multiple pages) to build — you've already disambiguated this, so the subagent shouldn't have to search.
 - The placeholder's surrounding context (heading + nearby prose) so it can infer sensible default props.
