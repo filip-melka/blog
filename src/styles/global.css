@@ -30,4 +30,8 @@
   --tw-prose-code: var(--color-text);
   --tw-prose-th-borders: var(--color-text);
   --tw-prose-td-borders: var(--color-text);
+
+  img {
+    @apply rounded-lg;
+  }
 }
