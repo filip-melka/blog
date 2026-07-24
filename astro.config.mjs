@@ -9,6 +9,7 @@ import { remarkReadingTime } from './src/plugins/remark/reading-time.ts'
 import { remarkWrapCodeBlocks } from './src/plugins/remark/wrap-code-blocks.ts'
 import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
+import rehypeExternalLinks from 'rehype-external-links'
 import { transformerMetaHighlight } from '@shikijs/transformers'
 
 import react from '@astrojs/react'
@@ -26,7 +27,13 @@ export default defineConfig({
     },
     processor: unified({
       remarkPlugins: [remarkReadingTime, remarkMath, remarkWrapCodeBlocks],
-      rehypePlugins: [rehypeKatex],
+      rehypePlugins: [
+        rehypeKatex,
+        [
+          rehypeExternalLinks,
+          { target: '_blank', rel: ['noopener', 'noreferrer'] },
+        ],
+      ],
     }),
   },
 
