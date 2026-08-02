@@ -14,6 +14,8 @@ import { transformerMetaHighlight } from '@shikijs/transformers'
 
 import react from '@astrojs/react'
 
+import sitemap from '@astrojs/sitemap';
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://filipmelka.com',
@@ -37,5 +39,5 @@ export default defineConfig({
     }),
   },
 
-  integrations: [mdx(), react()],
+  integrations: [mdx(), react(), sitemap()],
 })
