@@ -13,6 +13,12 @@ const { title = 'Filip Melka' } = Astro.props
     <link rel="icon" href="/blog/favicon.ico" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="Filip’s Blog"
+      href="/rss.xml"
+    />
     <title>{title}</title>
     <link
       rel="stylesheet"
