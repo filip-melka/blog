@@ -1,5 +1,7 @@
 ---
 import { Rss } from '@lucide/astro'
+import { Image } from 'astro:assets'
+import bluesky from '../assets/images/bluesky.svg'
 import ThemeToggle from './ThemeToggle.astro'
 ---
 
@@ -9,6 +11,14 @@ import ThemeToggle from './ThemeToggle.astro'
   >
     <a href="/"> <h1 class="font-semibold">Filip's Blog</h1></a>
     <div class="flex items-center gap-2 md:gap-4">
+      <a
+        href="https://bsky.app/profile/filipmelka.com"
+        aria-label="Bluesky profile"
+        target="_blank"
+        class="p-1"
+      >
+        <Image src={bluesky} alt="Bluesky" width={20} height={20} />
+      </a>
       <a href="/rss.xml" aria-label="RSS feed" class="p-1">
         <Rss size={20} />
       </a>
