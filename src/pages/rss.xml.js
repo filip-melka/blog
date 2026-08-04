@@ -8,11 +8,24 @@ export async function GET(context) {
     description:
       'Writing on computer science, math, and programming - explained from first principles.',
     site: context.site,
-    items: articles.map((article) => ({
-      title: article.data.title,
-      pubDate: article.data.pubDate,
-      description: article.data.description,
-      link: `/blog/${article.id}/`,
-    })),
+    xmlns: { media: 'http://search.yahoo.com/mrss/' },
+    items: articles.map((article) => {
+      const banner = article.data.banner
+      const bannerType = `image/${banner.format}`
+      const bannerUrl = new URL(banner.src, context.site).href
+
+      return {
+        title: article.data.title,
+        pubDate: article.data.pubDate,
+        description: article.data.description,
+        link: `/blog/${article.id}/`,
+        enclosure: {
+          url: bannerUrl,
+          length: 0,
+          type: bannerType,
+        },
+        customData: `<media:content url="${bannerUrl}" medium="image" type="${bannerType}" width="${banner.width}" height="${banner.height}" />`,
+      }
+    }),
   })
 }
