@@ -38,6 +38,8 @@ function readArticles() {
         bannerAbsPath: path.resolve(ARTICLES_DIR, data.banner),
         url: `${SITE_URL}/blog/${slug}/`,
         text: data.blueskyText ?? config.defaultPostText,
+        categories: data.categories,
+        hashtagsOverride: data.blueskyHashtags,
       }
     })
 }
@@ -63,13 +65,25 @@ async function fetchAlreadyPostedUrls(agent) {
   return posted
 }
 
+function categoriesToHashtags(categories) {
+  return categories.map((c) => `#${c.replace(/\s+/g, '')}`).join(' ')
+}
+
+function buildFinalText(article) {
+  const hashtagsEnabled = article.hashtagsOverride ?? config.hashtagsEnabled
+  const hashtags = hashtagsEnabled
+    ? categoriesToHashtags(article.categories)
+    : ''
+  return [article.text, hashtags].filter(Boolean).join('\n\n')
+}
+
 async function postArticle(agent, article) {
   const bannerBytes = readFileSync(article.bannerAbsPath)
   const { data: blob } = await agent.uploadBlob(bannerBytes, {
     encoding: 'image/png',
   })
 
-  const rt = new RichText({ text: article.text })
+  const rt = new RichText({ text: buildFinalText(article) })
   await rt.detectFacets(agent)
 
   await agent.post({
@@ -112,7 +126,7 @@ async function main() {
     if (isDryRun) {
       console.log(
         `[dry-run] Would post "${article.slug}" as a link card:\n` +
-          `  text: ${article.text}\n` +
+          `  text: ${buildFinalText(article)}\n` +
           `  title: ${article.title}\n` +
           `  description: ${article.description}\n` +
           `  uri: ${article.url}\n` +

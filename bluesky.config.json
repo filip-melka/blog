@@ -1,3 +1,4 @@
 {
-  "defaultPostText": "🔔 New Post"
+  "defaultPostText": "🔔 New Post",
+  "hashtagsEnabled": true
 }
