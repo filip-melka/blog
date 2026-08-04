@@ -3,7 +3,9 @@ import Footer from '../components/Footer.astro'
 import Header from '../components/Header.astro'
 import '../styles/global.css'
 
-const { title = 'Filip Melka' } = Astro.props
+const { title = 'Filip Melka', image, description } = Astro.props
+
+const ogImageUrl = image ? new URL(image.src, Astro.site).href : undefined
 ---
 
 <html lang="en">
@@ -20,6 +22,15 @@ const { title = 'Filip Melka' } = Astro.props
       href="/rss.xml"
     />
     <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+    <meta
+      name="twitter:card"
+      content={ogImageUrl ? 'summary_large_image' : 'summary'}
+    />
+    {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.css"

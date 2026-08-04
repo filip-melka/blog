@@ -20,6 +20,7 @@ const { Content, remarkPluginFrontmatter } = await render(article)
   pubDate={article.data.pubDate}
   minutesRead={remarkPluginFrontmatter.minutesRead}
   banner={article.data.banner}
+  description={article.data.description}
 >
   <Content />
 </ArticleLayout>
