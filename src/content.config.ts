@@ -10,7 +10,9 @@ const articles = defineCollection({
       description: z.string(),
       pubDate: z.coerce.date(),
       banner: image(),
+      categories: z.array(z.string()),
       blueskyText: z.string().optional(),
+      blueskyHashtags: z.boolean().optional(),
     }),
 })
 

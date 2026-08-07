@@ -27,6 +27,22 @@ Markdown processing is extended with two plugins in `src/plugins/remark/`:
 
 Both are registered in `astro.config.mjs`, alongside `remark-math` + KaTeX for math and Shiki meta-highlighting for code.
 
+## Deployment
+
+Pushing to `main` triggers `.github/workflows/deploy.yml`, which builds the site with `withastro/action` and publishes it to GitHub Pages.
+
+## Bluesky automation
+
+Once a deploy succeeds, `.github/workflows/bluesky-post.yml` runs `scripts/post-new-articles-to-bluesky.mjs`, which announces any article that doesn't yet have a matching post on the account's Bluesky feed — no local state is tracked; it just checks which article URLs are missing from the account's own recent posts. Each announcement is a link card (thumbnail + title + description pulled from frontmatter), built via `@atproto/api`.
+
+- **`bluesky.config.json`** (repo root) sets the defaults: `defaultPostText` (the caption used when an article doesn't override it) and `hashtagsEnabled` (whether `categories` are turned into hashtags).
+- **Per-article frontmatter overrides**, all optional:
+  - `blueskyText` — custom caption for that article's post (an empty string posts the card with no caption at all).
+  - `blueskyHashtags` — `true`/`false` to override the global `hashtagsEnabled` setting for just that article.
+  - `categories` (required on every article) are converted to `#PascalCase` hashtags, e.g. `Computer Science` → `#ComputerScience`, and appended after the caption when hashtags are enabled.
+- **Secrets**: the workflow needs `BLUESKY_IDENTIFIER` and `BLUESKY_APP_PASSWORD` (an [app password](https://bsky.app/settings/app-passwords), not the account password) set as repository secrets.
+- **Local testing**: `BLUESKY_IDENTIFIER=... BLUESKY_APP_PASSWORD=... npm run bluesky:post -- --dry-run` logs what would be posted without actually posting. It can also be run on demand from the Actions tab (`workflow_dispatch`) instead of waiting for a deploy.
+
 ## Development
 
 ```sh
@@ -50,6 +66,12 @@ src/
 ├── pages/               # routes
 ├── plugins/remark/      # custom remark plugins
 └── styles/              # global styles (Tailwind)
+scripts/
+└── post-new-articles-to-bluesky.mjs  # Bluesky auto-post script
+.github/workflows/
+├── deploy.yml           # build + deploy to GitHub Pages
+└── bluesky-post.yml     # announce new articles on Bluesky after a deploy
+bluesky.config.json      # Bluesky default post text + hashtag toggle
 .claude/
 ├── agents/              # blog-interactive-component-builder subagent
 ├── skills/              # wire-interactive-components skill
