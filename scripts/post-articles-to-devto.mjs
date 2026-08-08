@@ -90,6 +90,35 @@ function assertLocalAssetsExist(result) {
   )
 }
 
+// assertLocalAssetsExist proves the file is on this machine, not that it is
+// reachable at the URL the post will embed. In CI those are the same thing: the
+// working tree is a checkout of main, so nothing can be present locally and
+// missing remotely. Locally on a feature branch they diverge - an uncommitted
+// image exists on disk and 404s on raw.githubusercontent. Real publishes only,
+// so --dry-run keeps making zero network calls.
+async function assertAssetsReachable(result) {
+  const urls = [...new Set(result.localAssets.map((asset) => asset.url))]
+  const broken = (
+    await Promise.all(
+      urls.map(async (url) => {
+        try {
+          const response = await fetch(url, { method: 'HEAD' })
+          return response.ok ? null : `${response.status} - ${url}`
+        } catch (error) {
+          return `unreachable - ${url} (${error.message})`
+        }
+      }),
+    )
+  ).filter(Boolean)
+
+  if (broken.length === 0) return
+  throw new Error(
+    `${broken.length} referenced URL(s) don't resolve, so the post would ` +
+      `embed broken images. Commit and push them to main first:\n` +
+      broken.map((entry) => `    - ${entry}`).join('\n'),
+  )
+}
+
 function writePreview(converted) {
   mkdirSync(PREVIEW_DIR, { recursive: true })
   writeFileSync(
@@ -167,7 +196,8 @@ async function main() {
 
   let created = 0
   let alreadyThere = 0
-  for (const { slug, article, canonicalUrl } of converted) {
+  for (const result of converted) {
+    const { slug, article, canonicalUrl } = result
     try {
       if (existing.has(normalizeUrl(canonicalUrl))) {
         alreadyThere++
@@ -175,13 +205,15 @@ async function main() {
         continue
       }
 
+      await assertAssetsReachable(result)
+
       if (created > 0) await sleep(WRITE_DELAY_MS)
-      const result = await createArticle(apiKey, article)
+      const draft = await createArticle(apiKey, article)
       created++
-      console.log(`Created draft "${slug}" on Dev.to: ${result.url}`)
+      console.log(`Created draft "${slug}" on Dev.to: ${draft.url}`)
     } catch (error) {
       hadFailure = true
-      console.error(`Failed to publish "${slug}":`, error)
+      console.error(`Failed to publish "${slug}":\n  ${error.message}`)
     }
   }
 

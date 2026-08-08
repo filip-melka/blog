@@ -259,13 +259,19 @@ function makeUrlResolver({ slug, githubRawBase, siteUrl, localAssets }) {
     // ./images/x.png, ./banners/x.png and ./fallbacks/x.png live next to the
     // article in the repo
     if (url.startsWith('./')) {
-      localAssets.push({ repoPath: `src/articles/${url.slice(2)}`, where })
-      return githubRawBase + url.slice(2)
+      const resolved = githubRawBase + url.slice(2)
+      localAssets.push({
+        repoPath: `src/articles/${url.slice(2)}`,
+        url: resolved,
+        where,
+      })
+      return resolved
     }
     // /x.png is a public/ asset served from the deployed site
     if (url.startsWith('/')) {
-      localAssets.push({ repoPath: `public${url}`, where })
-      return siteUrl + url
+      const resolved = siteUrl + url
+      localAssets.push({ repoPath: `public${url}`, url: resolved, where })
+      return resolved
     }
     throw new ConversionError(
       `${slug}.mdx: ${where} has the relative path "${url}", which can't be ` +
