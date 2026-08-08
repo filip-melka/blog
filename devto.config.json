@@ -1,0 +1,7 @@
+{
+  "maxTags": 4,
+  "tagMap": {
+    "Web Development": "webdev"
+  },
+  "skip": []
+}

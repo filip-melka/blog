@@ -1,0 +1,28 @@
+---
+// Export-only metadata wrapper.
+//
+// Renders nothing of its own - children are emitted verbatim, so an article
+// looks identical on the site whether or not its widgets are wrapped. The sole
+// purpose is to carry metadata in the MDX source AST, where a future remark
+// exporter reads it when republishing to platforms that can't run React.
+//
+// - fallback:     absolute URL of a PNG under public/, substituted for the widget
+// - fallbackText: markdown (may contain $...$ LaTeX), substituted for the widget
+// - caption:      placed under whichever fallback the exporter substitutes
+
+type Props = {
+  fallback?: string
+  fallbackText?: string
+  caption?: string
+}
+
+const { fallback, fallbackText } = Astro.props
+
+if (!fallback && !fallbackText) {
+  throw new Error(
+    `<Interactive> on ${Astro.url.pathname} is missing export metadata: pass "fallback" (a PNG under public/) or "fallbackText" (markdown), otherwise the widget can't be republished.`,
+  )
+}
+---
+
+<slot />

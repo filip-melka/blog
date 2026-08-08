@@ -1,0 +1,32 @@
+name: Publish Articles to Dev.to
+
+on:
+  workflow_run:
+    workflows: ['Deploy to GitHub Pages']
+    types: [completed]
+  workflow_dispatch:
+
+# Two overlapping runs would both call me/all before either POST lands, both
+# see "not found", and both create the article - a permanent duplicate.
+concurrency:
+  group: devto-post
+  cancel-in-progress: false
+
+jobs:
+  post-to-devto:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout your repository using git
+        uses: actions/checkout@v7
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Publish articles to Dev.to
+        env:
+          DEVTO_API_KEY: ${{ secrets.DEVTO_API_KEY }}
+        run: npm run devto:post
