@@ -105,7 +105,9 @@ function readInteractiveAttributes(node, slug) {
 
 // The caption sits under whichever fallback is substituted. It is parsed as
 // markdown (it may contain $...$) and wrapped in emphasis so it reads as a
-// figure caption.
+// figure caption. Only used under fallbackText - an image fallback's caption
+// goes through buildImageReplacement instead, since Dev.to only supports an
+// image caption via raw HTML <figcaption>, not a markdown convention.
 function buildCaption(caption, node, slug) {
   const parsed = parser.parse(caption)
   if (parsed.children.length !== 1 || parsed.children[0].type !== 'paragraph') {
@@ -120,15 +122,77 @@ function buildCaption(caption, node, slug) {
   }
 }
 
+function escapeHtml(value) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
+
+// figcaption content is raw HTML, not markdown, so only a deliberately narrow
+// set of inline content is allowed through: plain text and $...$ math
+// (rendered as the same katex liquid tag body math uses - unconfirmed whether
+// Forem expands Liquid inside a raw HTML block, same open question as katex
+// inside a {% katex %} block). Anything richer (bold, links, ...) would need
+// its own HTML tag and silently wouldn't get one, so it's rejected rather than
+// emitted wrong.
+function serializeCaptionHtml(caption, node, slug, stats) {
+  const parsed = parser.parse(caption)
+  if (parsed.children.length !== 1 || parsed.children[0].type !== 'paragraph') {
+    throw new ConversionError(
+      `${slug}.mdx (${at(node)}): <Interactive caption> must be a single ` +
+        `paragraph of inline markdown.`,
+    )
+  }
+  return parsed.children[0].children
+    .map((child) => {
+      if (child.type === 'text') return escapeHtml(child.value)
+      if (child.type === 'inlineMath') {
+        stats.katexInline += 1
+        return `{% katex inline %}${child.value.trim()}{% endkatex %}`
+      }
+      throw new ConversionError(
+        `${slug}.mdx (${at(node)}): <Interactive caption> on an image ` +
+          `fallback only supports plain text and $...$ math (found a ` +
+          `"${child.type}"). It becomes a raw HTML <figcaption>, not ` +
+          `markdown, so richer formatting has nowhere to go - simplify the ` +
+          `caption.`,
+      )
+    })
+    .join('')
+}
+
+// An image fallback with no caption stays a plain markdown image - nothing to
+// caption, no reason to reach for HTML. With a caption, Dev.to's documented
+// way to render one is a raw HTML <figure>/<figcaption> (there is no markdown
+// convention for it), so the whole thing becomes one opaque `html` node.
+function buildImageReplacement(attrs, node, slug, resolveUrl, stats) {
+  const url = resolveUrl(attrs.fallback, `<Interactive> at ${at(node)}`)
+  if (!attrs.caption) {
+    return {
+      type: 'paragraph',
+      children: [{ type: 'image', url, alt: '', title: null }],
+    }
+  }
+  const figcaption = serializeCaptionHtml(attrs.caption, node, slug, stats)
+  return {
+    type: 'html',
+    value:
+      `<figure>\n  <img src="${escapeHtml(url)}" alt="${escapeHtml(attrs.caption)}">\n` +
+      `  <figcaption>${figcaption}</figcaption>\n</figure>`,
+  }
+}
+
 // Replaces each <Interactive> (and its React children) with its export
 // fallback. Runs BEFORE the math pass so that $...$ inside fallbackText and
 // caption goes through exactly the same math -> liquid conversion as body math.
-function expandInteractive(tree, slug, resolveUrl) {
+function expandInteractive(tree, slug, resolveUrl, stats) {
   visit(tree, (node, index, parent) => {
     if (parent == null || index == null) return
 
     // An inline <Interactive> can't work: every substitution it produces
-    // (image paragraph, parsed markdown, caption) is block-level.
+    // (image/figure, parsed markdown, caption) is block-level.
     if (node.type === 'mdxJsxTextElement' && node.name === INTERACTIVE) {
       throw new ConversionError(
         `${slug}.mdx (${at(node)}): <Interactive> is being used inline. It ` +
@@ -147,21 +211,11 @@ function expandInteractive(tree, slug, resolveUrl) {
 
     const replacement = attrs.fallbackText
       ? parser.parse(attrs.fallbackText).children
-      : [
-          {
-            type: 'paragraph',
-            children: [
-              {
-                type: 'image',
-                url: resolveUrl(attrs.fallback, `<Interactive> at ${at(node)}`),
-                alt: attrs.caption ?? '',
-                title: null,
-              },
-            ],
-          },
-        ]
+      : [buildImageReplacement(attrs, node, slug, resolveUrl, stats)]
 
-    if (attrs.caption) replacement.push(buildCaption(attrs.caption, node, slug))
+    if (attrs.fallbackText && attrs.caption) {
+      replacement.push(buildCaption(attrs.caption, node, slug))
+    }
 
     parent.children.splice(index, 1, ...replacement)
     // Skip past what we just injected: it can't contain another <Interactive>.
@@ -356,7 +410,7 @@ export function convertArticle({ source, slug, config = {} }) {
   )
 
   removeEsmImports(tree)
-  expandInteractive(tree, slug, resolveUrl)
+  expandInteractive(tree, slug, resolveUrl, stats)
   assertNoUnwrappedJsx(tree, slug)
   mathToLiquid(tree, stats)
   stripCodeMeta(tree)
