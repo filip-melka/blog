@@ -7,6 +7,7 @@ blueskyText: ''
 categories: ['Go', 'TUI']
 ---
 
+import Interactive from '../components/Interactive.astro'
 import { ElmArchitectureExplainer } from './components/elm-architecture-explainer'
 
 When Claude Code first came out, what caught my eye was its terminal interface — the TUI. Ever since, I've wanted to build my own cool-looking TUIs. Recently, while learning Go, I came across [Bubble Tea](https://github.com/charmbracelet/bubbletea) — a Go framework for making terminal apps. In this article I'll give you a quick "how to get started" guide and walk through the core concepts behind Bubble Tea, along with some tips and tricks I've picked up along the way.
@@ -21,7 +22,12 @@ At the core of The Elm Architecture are three concepts:
 - `View`: displays the `Model`'s state to the user
 - `Update`: listens for messages and updates the `Model` accordingly
 
-<ElmArchitectureExplainer client:visible />
+<Interactive
+  fallback="./fallbacks/elm-architecture-diagram.png"
+  caption="The Elm Architecture loop: the View renders the Model, user input and other events become Messages, and Update folds each Message into a new Model."
+>
+  <ElmArchitectureExplainer client:visible />
+</Interactive>
 
 Don't worry if this doesn't fully make sense yet — it'll click once we start building. So let's get started.
 
