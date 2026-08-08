@@ -1,5 +1,7 @@
 # build output
 dist/
+# devto export previews
+.devto-preview/
 # generated types
 .astro/
 

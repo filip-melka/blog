@@ -6,20 +6,29 @@ banner: './banners/is-1-larger-than-0999.png'
 categories: ['Mathematics']
 ---
 
+import Interactive from '../components/Interactive.astro'
 import { ComparisonReveal } from './components/comparison-reveal'
 import { ZenoParadoxWidget } from './components/zeno-paradox-widget'
 
 Let's go back in time to primary school, to those exercises with comparison symbols, where you had to compare two numbers and fill in the right sign:
 
-<ComparisonReveal client:visible left="3" right="5" sign="<" />
+<Interactive fallbackText="$3 < 5$">
+  <ComparisonReveal client:visible left="3" right="5" sign="<" />
+</Interactive>
 
-<ComparisonReveal client:visible left="8" right="8" sign="=" />
+<Interactive fallbackText="$8 = 8$">
+  <ComparisonReveal client:visible left="8" right="8" sign="=" />
+</Interactive>
 
-<ComparisonReveal client:visible left="2" right="1" sign=">" />
+<Interactive fallbackText="$2 > 1$">
+  <ComparisonReveal client:visible left="2" right="1" sign=">" />
+</Interactive>
 
 Now that you've had a nice trip down memory lane, here's one more for you:
 
-<ComparisonReveal client:visible left="0.999..." right="1" sign="=" />
+<Interactive fallbackText="$0.999\dots = 1$">
+  <ComparisonReveal client:visible left="0.999..." right="1" sign="=" />
+</Interactive>
 
 This might seem a bit unintuitive. We're saying that $0.999\dots$ (repeating forever) and $1$ aren't two different numbers sitting close to each other - they're the exact same number.
 
@@ -129,7 +138,12 @@ Zeno of Elea was (supposedly) an ancient Greek philosopher who lived around the 
 
 One morning Zeno woke up parched. His nightstand, holding a cup of water with half a tablespoon of lime juice already stirred in, sat a single meter away from him. Being a philosopher, he couldn't just reach for it - he had to wonder whether reaching it was even possible. To get to the table, he reasoned, he'd first have to cover half the distance, leaving half remaining. Then half of that half, leaving a quarter. Then half of that, leaving an eighth. And so on, forever - no matter how much distance he'd already closed, there was always the same fraction of it still waiting to be closed.
 
-<ZenoParadoxWidget client:visible />
+<Interactive
+  fallback="./fallbacks/zeno-paradox.png"
+  caption="Four successive steps toward the cup, each one halving the distance that remains: 1/2 m, then 1/4 m, then 1/8 m, then 1/16 m. Try the interactive version on the original post."
+>
+  <ZenoParadoxWidget client:visible />
+</Interactive>
 
 This is **Zeno's paradox** (and for the record, I have no evidence he actually drank lime water in the mornings - but it's hard to be certain of anything with these ancient philosophers).
 
