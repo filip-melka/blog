@@ -87,7 +87,7 @@ export function NaiveEvaluatorWidget({
         step {displayStep} / {Math.max(operationCount, 1)}
       </div>
 
-      <div className="mt-10 flex min-h-11 items-center justify-center gap-2">
+      <div className="mt-10 flex min-h-11 items-center justify-center gap-2 overflow-x-auto">
         <span className="bg-text text-bg rounded-[10px] px-5 py-2 text-lg font-bold">
           {formatNumber(accumulator)}
         </span>

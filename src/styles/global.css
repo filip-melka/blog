@@ -34,4 +34,14 @@
   img {
     @apply rounded-lg;
   }
+
+  code {
+    @apply rounded-md px-1.5 py-0.5 text-xs font-semibold;
+    background-color: color-mix(in srgb, var(--color-text) 8%, transparent);
+  }
+
+  code::before,
+  code::after {
+    content: none;
+  }
 }
