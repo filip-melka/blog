@@ -1,0 +1,182 @@
+---
+title: How Do Computers Know To Calculate Parentheses First
+description: Ever wonder how a calculator knows to solve 5/2 before adding the 3 in "3 + 5/2"? I'd like to share what I found out and walk you through how we can write a program to evaluate math expressions using two simple data structures — a stack and a queue.
+pubDate: 2026-08-23
+banner: './banners/how-do-computers-know-to-calculate-parentheses-first.png'
+categories: ['Computer Science', 'Algorithms', 'Data Structures']
+---
+
+import { NaiveEvaluatorWidget } from './components/naive-evaluator-widget'
+import { StackVisualizer } from './components/stack-visualizer'
+import { QueueVisualizer } from './components/queue-visualizer'
+import { PostfixEvaluator } from './components/postfix-evaluator'
+import { ShuntingYardWidget } from './components/shunting-yard-widget'
+import { FullPipelineWidget } from './components/full-pipeline-widget'
+
+In my first year of college we were learning Java. One of the first exercises you do is converting temperature from degrees of Celsius to degrees of Fahrenheit. A very straightforward thing to do:
+
+```java
+double fahrenheit = 32 + (celsius*9/5);
+```
+
+But when I looked at my classmates, we all wrote the math expression slightly differently:
+
+```java
+// Classmate A:
+double fahrenheit = 32 + celsius*9/5;
+
+// Classmate B:
+double fahrenheit = celsius*9/5 + 32;
+
+// Classmate C:
+double fahrenheit = celsius*(9/5) + 32;
+```
+
+All the answers are obviously the same, but it got me thinking - how does the program evaluate math expressions?
+
+I mean, let's say I give you a string representing a math expression and ask you to write a program to evaluate it.
+
+Here's my first-year thinking: for simple expressions only involving addition and subtraction like $3+5-2$, it's quite straightforward - I split the expression into individual tokens (numbers and operators). Then I simply go from left to right, keeping track of the running total. Easy.
+
+<NaiveEvaluatorWidget client:visible expression="3+5-2" />
+
+But what about an expression with operators of different precedence, like $3+5/2$? We humans know division comes before addition, but computers don't just _know_ that. I'm afraid my algorithm (going left to right) would fail miserably in this case:
+
+<NaiveEvaluatorWidget client:visible expression="3+5/2" />
+
+And I haven't even brought parentheses into it yet. The point is that In maths, we don't always evaluate left to right — so how does a computer know in which order to evaluate complex expressions?
+
+I remember thinking that this must take a huge amount of nested loops and edge cases. But it turns out the real answer is much more elegant — and it leans on two data structures you meet in the first week of any data structures course: the **stack** and the **queue**.
+
+If you're already familiar with stacks and queues, feel free to skip the following section. Otherwise, here's a quick introduction.
+
+## Stack & Queue In A Nutshell
+
+You can think of stack and queue as two different ways of organizing items. A **stack** is a linear data structure that follows the **Last In, First Out (LIFO)** principle, meaning the last element added is the first one removed (similar to a stack of plates). We can perform the following operations on a stack:
+
+- **push**: add an item to the top
+- **pop**: remove the top item
+- **peek/top**: see the top item without removing it
+
+<StackVisualizer client:visible />
+
+On the other hand, a **queue** follows the **First In, First Out (FIFO)** principle, where the first element added is the first one removed (usually compared to people waiting in a line). We can perform the following operations on a queue:
+
+- **enqueue**: add an item to the rear (end)
+- **dequeue**: remove an item from the front
+- **front/peek**: see the first item without removing it
+
+<QueueVisualizer client:visible />
+
+Now we know just enough about these two data structures to tackle some math problems.
+
+## Expression Notations
+
+We humans are used to writing expressions with the operator placed _between_ the two operands it acts on. To add 2 and 3, we write:
+
+$$
+2+3
+$$
+
+This is called **infix notation**. It's the only way most of us have ever written math — but it's not the only notation out there.
+
+### Reverse Polish notation
+
+**Reverse Polish notation (RPN)**, also called **postfix notation**, places operators _after_ their operands. Our expression above, rewritten in postfix, becomes:
+
+$$
+2\ 3\ +
+$$
+
+So why would anyone prefer this over the "intuitive" infix form? Because postfix notation has one killer advantage: _it removes the need for operator precedence and parentheses entirely._
+
+Here are some examples of several math expressions (in infix form), rewritten to its equivalent postfix notation. (Don't worry if you don't know how we converted them — we'll tackle that in a moment.)
+
+$$
+(2+3)*4 \quad\longrightarrow\quad 2\ 3\ +\ 4\ *
+$$
+
+$$
+(1+2)*(3-4) \quad\longrightarrow\quad 1\ 2\ +\ 3\ 4\ -\ *
+$$
+
+$$
+(2+(3-1))*4 \quad\longrightarrow\quad 2\ 3\ 1\ -\ +\ 4\ *
+$$
+
+In each case the parentheses vanish entirely — the postfix token order alone encodes what used to be grouped, so no bracket ever needs to be represented or checked at evaluation time.
+
+As you'll see, a postfix expression can be evaluated in a single left-to-right pass — no lookahead, no backtracking, no special-casing brackets.
+
+### Polish notation
+
+_Quick detour:_ if we've just introduced the _Reverse_ Polish notation, what's the "normal" Polish notation?
+
+**Polish notation (PN)**, or **prefix notation**, places operators _before_ their operands. Our example $2+3$ becomes:
+
+$$
++2\ 3
+$$
+
+The name "Polish" refers to the nationality of logician Jan Łukasiewicz, who invented the notation in 1924.
+
+We'll only be working with postfix notation for the rest of this article, but it's worth knowing prefix exists.
+
+## Evaluating a Postfix Expression
+
+Let's start by evaluating a postfix expression (we'll get to converting infix into postfix afterwards).
+
+As promised, this only takes a single pass with, using a single stack. The algorithm goes like this:
+
+- Scan the expression left to right.
+- Each time you read a number (operand), push it onto the stack.
+- Each time you read an operator, pop the operands it needs off the stack (the first one popped is the right-hand operand), apply the operator, and push the result back on.
+- Once there are no tokens left, the one number remaining on the stack is your answer.
+
+<PostfixEvaluator client:visible />
+
+That's it — no precedence rules, no parentheses to track. The notation already encodes the order of operations, so the algorithm doesn't have to think about it at all.
+
+Now we know how to _evaluate_ a postfix expression. The catch is that humans write infix, so before a program can run the algorithm above, it first has to translate the expression we wrote in infix into postfix. That's the job of the Shunting-yard algorithm.
+
+## The Shunting-Yard Algorithm
+
+This infix-to-postfix conversion algorithm was invented by **Edsger W. Dijkstra** (yes, _that_ Dijkstra), and it's named after a railroad shunting yard — the part of a rail depot where train cars get shuffled onto side tracks so they can be reordered before continuing on their way. That's almost exactly what our operators do here: instead of running immediately, they wait on a "siding" (our stack) until we're sure nothing tighter-binding needs to go first.
+
+This algorithm is a little more involved, and this time we need both a **stack** and a **queue**. This is how it goes:
+
+- While there are tokens left to read:
+  - Read the next token.
+  - If it's a **number**, add it to the queue.
+  - If it's an **operator**:
+    - While the operator on top of the stack has greater or equal precedence than the operator you just read, pop it onto the queue (a left bracket on top of the stack always stops this loop immediately — brackets are never popped by this rule, only by the right-bracket step below).
+    - Push the current operator onto the stack.
+  - If it's a **left bracket**, push it onto the stack.
+  - If it's a **right bracket**:
+    - Pop operators from the stack onto the queue until a left bracket is on top.
+    - Pop that left bracket off the stack and discard it (the brackets have done their job and don't appear in postfix at all).
+- Once there are no tokens left, pop any remaining operators from the stack onto the queue.
+
+Drain the queue, and what's left is your original expression, fully converted to postfix.
+
+<ShuntingYardWidget client:visible />
+
+## Putting It All Together
+
+We now have every ingredient we need to evaluate a complex math expression. First, take the infix expression and run it through the Shunting-yard algorithm to get a postfix expression. Then, evaluate that postfix expression with the stack-based algorithm from earlier. The result is the answer to your original expression. Simple, isn't it?
+
+<FullPipelineWidget client:visible />
+
+The key idea running through all of this: operator precedence isn't handled during evaluation at all — it's handled entirely during parsing, when we convert from infix to postfix. By the time we're evaluating, all the hard thinking is already done, and all that's left is a single, boring, left-to-right pass.
+
+## A Quick Reality Check
+
+_One caveat:_ this isn't quite how `gcc` or `javac` work. Most production compilers parse infix source directly into an **Abstract Syntax Tree (AST)**, not postfix, since an AST holds the structure needed for later steps like type checking and optimization.
+
+Postfix still shows up in the real world, and for calculators and simple expression evaluators, going straight to postfix works great — which is exactly what we're doing here.
+
+## Conclusion
+
+In this article, we saw how a computer can evaluate a complex math expression while still respecting the correct order of operations. We introduced the three expression notations — infix, postfix, and prefix — walked through the algorithm for evaluating a postfix expression, and then covered Dijkstra's Shunting-yard algorithm for converting infix into postfix in the first place.
+
+I genuinely love this pair of algorithms — partly for their simplicity (and for humbling first-year me, who was convinced this would take dozens of nested loops), and partly because they're one of the cleanest real-world examples of stacks and queues in action, using data structures you learn in your introductory data structures course.
