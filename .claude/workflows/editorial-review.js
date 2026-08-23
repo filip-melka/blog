@@ -1,9 +1,9 @@
 export const meta = {
   name: 'editorial-review',
   description:
-    'Multi-lens editorial review of a blog article (technical accuracy, clarity, code-sample correctness) with single-skeptic verification per finding',
+    'Multi-lens editorial review of a blog article (technical accuracy, clarity, code-sample correctness, proofreading) with single-skeptic verification per finding',
   phases: [
-    { title: 'Review', detail: 'three lenses find issues independently' },
+    { title: 'Review', detail: 'four lenses find issues independently' },
     { title: 'Verify', detail: 'one skeptic per finding tries to refute it' },
   ],
 }
@@ -66,6 +66,10 @@ const LENSES = [
   {
     key: 'code-samples',
     prompt: `Read the article at ${articlePath}. Review every code sample/snippet in it strictly for CORRECTNESS: syntax errors, code that would not actually run or compile, logic that doesn't do what the surrounding prose claims it does, and mismatches between a snippet and its stated output. If a snippet is pseudocode explicitly framed as such, judge it against its own stated intent rather than a specific language's exact syntax. Do not comment on prose clarity or technical accuracy of surrounding claims — other reviewers cover those. For each issue, report its location (quote the snippet or its preceding heading), the issue, a severity, and a concrete suggested fix. If you find nothing, return an empty findings array.`,
+  },
+  {
+    key: 'proofreading',
+    prompt: `Read the article at ${articlePath}. Review it strictly for PROOFREADING: typos, misspellings, missing/duplicated words, grammar errors, punctuation mistakes, subject-verb agreement, and other surface-level writing errors — the kind of thing a copyeditor would mark, not a technical reviewer. Do not comment on whether an explanation is confusing or conceptually well-ordered (that's the clarity lens's job) and do not comment on technical accuracy or code correctness — other reviewers cover those. Flag only actual mistakes, not stylistic preferences or things that are merely one valid way to phrase something. For each issue, report its location (quote the exact sentence or fragment containing the error), the issue, a severity (typos/grammar errors are usually low severity unless they change the meaning of a technical claim), and a concrete suggested fix. If you find nothing, return an empty findings array — do not invent issues to have something to report.`,
   },
 ]
 
