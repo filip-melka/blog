@@ -183,7 +183,7 @@ export function ShuntingYardWidget({ tokens = DEFAULT_TOKENS }: Props) {
   }
 
   return (
-    <div className="not-prose bg-bg flex flex-col gap-7 px-7 py-8">
+    <div className="not-prose bg-bg mx-auto flex w-full max-w-[560px] flex-col gap-7 overflow-x-hidden px-6 py-8 sm:px-7">
       <div className="flex flex-col gap-2.5">
         <div className="flex flex-row flex-wrap gap-1.5">
           {tokens.map((token, i) => {
@@ -212,7 +212,7 @@ export function ShuntingYardWidget({ tokens = DEFAULT_TOKENS }: Props) {
       <div className="bg-text/10 h-px w-full" />
 
       <div className="flex flex-row flex-wrap gap-5">
-        <div className="border-text/10 flex flex-col gap-3.5 rounded-xl border p-5">
+        <div className="border-text/10 flex min-w-0 flex-col gap-3.5 rounded-xl border p-5">
           <h3 className="text-text text-base font-semibold">Operator Stack</h3>
           <div
             className="flex w-32 flex-col justify-end gap-2"
@@ -224,7 +224,7 @@ export function ShuntingYardWidget({ tokens = DEFAULT_TOKENS }: Props) {
           </div>
         </div>
 
-        <div className="border-text/10 flex flex-col gap-3.5 rounded-xl border p-5">
+        <div className="border-text/10 flex min-w-0 flex-col gap-3.5 rounded-xl border p-5">
           <div className="flex flex-col gap-1.5">
             <h3 className="text-text text-base font-semibold">Output Queue</h3>
             <div className="flex flex-row items-center justify-between text-[11px] font-semibold tracking-wide">
@@ -232,7 +232,7 @@ export function ShuntingYardWidget({ tokens = DEFAULT_TOKENS }: Props) {
               <span className="text-text">FRONT</span>
             </div>
           </div>
-          <div className="flex flex-row gap-2">
+          <div className="flex flex-row gap-2 overflow-x-auto">
             {(() => {
               // The first token ever enqueued is the front of the queue and
               // must stay pinned to the rightmost slot; reserve any unused

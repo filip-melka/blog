@@ -96,7 +96,7 @@ export function QueueVisualizer({
 
   return (
     <div
-      className="not-prose bg-bg mx-auto my-6 flex w-full flex-col gap-4 px-6 py-8 sm:px-8"
+      className="not-prose bg-bg mx-auto my-6 flex w-full min-w-0 flex-col gap-4 px-6 py-8 sm:px-8"
       style={{ maxWidth: trackWidth + CARD_HORIZONTAL_PADDING }}
     >
       {/* Reserved-height toast so feedback never shifts the layout below it */}
@@ -120,7 +120,7 @@ export function QueueVisualizer({
         </span>
       </div>
 
-      <div className="flex justify-end gap-2">
+      <div className="flex justify-end gap-2 overflow-x-auto">
         {slots.map((value, index) => {
           const isFront = index === frontSlotIndex
           return (
