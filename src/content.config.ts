@@ -16,4 +16,12 @@ const articles = defineCollection({
     }),
 })
 
-export const collections = { articles }
+const policies = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/policies' }),
+  schema: z.object({
+    title: z.string(),
+    lastUpdated: z.coerce.date(),
+  }),
+})
+
+export const collections = { articles, policies }

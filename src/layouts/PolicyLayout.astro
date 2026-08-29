@@ -1,0 +1,23 @@
+---
+import BaseLayout from './BaseLayout.astro'
+
+const { title, lastUpdated } = Astro.props
+
+const formattedLastUpdated = lastUpdated.toLocaleDateString('en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+})
+---
+
+<BaseLayout title={title}>
+  <main class="mx-auto w-11/12 pt-8 pb-12 md:w-2xl lg:w-3xl lg:pt-12">
+    <h1 class="text-3xl font-semibold">{title}</h1>
+    <p class="text-text/70 mt-2 text-sm">
+      Last updated: {formattedLastUpdated}
+    </p>
+    <article class="prose mt-8 max-w-none">
+      <slot />
+    </article>
+  </main>
+</BaseLayout>
