@@ -1,0 +1,104 @@
+---
+title: 'Estimating π With Randomness: The Monte Carlo Way'
+description: Ever wonder how randomness could help estimate one of math's most famous constants? I'd like to walk you through the Monte Carlo method — a surprisingly simple way to approximate π by scattering random points in a square and circle.
+pubDate: 2026-08-30
+banner: './banners/estimating-pi-with-randomness.png'
+categories: ['Math', 'Pi', 'Monte Carlo', 'Simulation']
+---
+
+import { ArchimedesPolygonBounds } from './components/archimedes-polygon-bounds'
+import { SquareDiagram } from './components/square-diagram'
+import { CircleInsideSquare } from './components/circle-inside-square'
+import { AreaComparison } from './components/area-comparison'
+import { MonteCarloAddPoint } from './components/monte-carlo-add-point'
+import { MonteCarloPiEstimator } from './components/monte-carlo-pi-estimator'
+import { CircleSquareRatio } from './components/circle-square-ratio'
+
+Pi ($\pi$) is one of the most iconic numbers in mathematics. It shows up everywhere — circles, spirals, ocean waves, even quantum mechanics.
+
+We probably remember from high school that $\pi$ is the ratio between a circle's circumference and its diameter:
+
+$$
+	\pi = \frac{circumference\ of\ a\ circle}{diameter\ of\ a\ circle}
+$$
+
+We also remember its approximate value, 3.14 — but have you ever wondered how we actually arrive at that number?
+
+Well, the ancient Greek mathematician Archimedes famously used polygons inside and outside a circle. The more sides the polygon has, the closer its perimeter gets to the circle's circumference.
+
+<ArchimedesPolygonBounds client:visible />
+
+He established bounds equivalent to:
+
+$$
+	3.1408<\pi <3.1429
+$$
+
+To get better accuracy, you need more sides. But as you add more, the improvements get smaller and smaller — which is why computers today rely on more efficient formulas to calculate trillions of digits of $\pi$.
+
+But don't worry — we won't be diving into complex geometry or calculus today. Instead, we'll use something surprisingly simple yet fascinating: **randomness**.
+
+Sounds intriguing? Let's dive in!
+
+## The Monte Carlo Method
+
+The **Monte Carlo method** is a class of algorithms that rely on repeated random sampling to obtain numerical results. It was invented by Stanisław Ulam, a Polish-American mathematician — reportedly while he was thinking about the odds of winning a game of solitaire, and realized random sampling could crack problems that were too messy to solve with exact math.
+
+And yes, the method's name comes from the Monte Carlo Casino in Monaco, reflecting the role of chance in the process. 🎲
+
+Here's how we can use the Monte Carlo method to estimate $\pi$:
+
+Imagine a square with a side of length $2r$:
+
+<SquareDiagram client:visible />
+
+Now imagine a circle with radius $r$, perfectly inscribed inside that square — touching all four sides.
+
+<CircleInsideSquare client:visible />
+
+We know that:
+
+- The area of the square is $4r^2$.
+- The area of the circle is $\pi r^2$.
+
+<AreaComparison client:visible />
+
+Finally, imagine scattering random points inside the square. Some will land inside the circle, some outside it:
+
+<MonteCarloAddPoint client:visible />
+
+What's the probability that a point lands inside the circle? It's simply the ratio of the circle's area to the square's area, which works out to $\frac{\pi}{4}$.
+
+<CircleSquareRatio client:visible />
+
+If we're placing the points randomly, then the fraction of points landing inside the circle should, over time, get closer and closer to $\frac{\pi}{4}$:
+
+$$
+	\frac{Points\ in\ the\ circle}{Total\ number\ of\ points} \approx \frac{\pi}{4}
+$$
+
+By counting how many points land inside the circle and dividing by the total number of points, we get an estimate of that probability. Multiply by 4, and voilà — an estimate of $\pi$:
+
+$$
+	\pi \approx 4 \cdot \frac{Points\ in\ the\ circle}{Total\ number\ of\ points}
+$$
+
+This works thanks to the _law of large numbers_, which says that the more random data we collect, the closer our results get to the true expected value.
+
+So if we throw down enough random points, we land on a decent approximation of $\pi$ — no complex calculations required.
+
+<MonteCarloPiEstimator client:visible />
+
+## Try It Yourself
+
+What I really like about this experiment is that it doesn't have to stay a computer simulation — we can bring it into the real world. All you need is:
+
+- A square sheet of paper
+- A circle drawn inside it, touching all four sides
+- Small objects to toss — beans, bits of paper, paperclips, whatever's on your desk
+
+People have gotten creative with this too — some have [thrown actual darts at a target](https://www.youtube.com/watch?v=M34TO71SKGk) instead.
+
+## Final Thoughts
+
+There's something wonderfully strange about pinning down a number as precise and mysterious as $\pi$ using nothing but chance. While this method isn't the most efficient (you'd need millions/billions of tosses for higher precision), it's a fun and intuitive introduction to the Monte Carlo method.
