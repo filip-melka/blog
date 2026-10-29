@@ -27,7 +27,7 @@ export function remarkWrapCodeBlocks() {
         type: 'mdxJsxFlowElement',
         name: COMPONENT_NAME,
         attributes: [
-          { type: 'mdxJsxAttribute', name: 'lang', value: node.lang ?? 'text' },
+          { type: 'mdxJsxAttribute', name: 'lang', value: node.lang ?? '' },
           { type: 'mdxJsxAttribute', name: 'client:visible', value: null },
           ...(isCollapsible
             ? [{ type: 'mdxJsxAttribute', name: 'collapsible', value: null }]
