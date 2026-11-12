@@ -2,6 +2,7 @@
 import { Rss } from '@lucide/astro'
 import { Image } from 'astro:assets'
 import bluesky from '../assets/images/bluesky.svg'
+import marimo from '../assets/images/marimo.png'
 import ThemeToggle from './ThemeToggle.astro'
 ---
 
@@ -11,6 +12,21 @@ import ThemeToggle from './ThemeToggle.astro'
   >
     <a href="/"> <h1 class="font-semibold">Filip's Blog</h1></a>
     <div class="flex items-center gap-2 md:gap-4">
+      <a
+        href="https://notebooks.filipmelka.com"
+        aria-label="My Notebooks"
+        target="_blank"
+        class="flex items-center gap-1 p-1"
+      >
+        <Image
+          src={marimo}
+          alt="Marimo"
+          width={20}
+          height={20}
+          class="md:hidden"
+        />
+        <span class="hidden md:inline">My Notebooks</span>
+      </a>
       <a
         href="https://bsky.app/profile/filipmelka.com"
         aria-label="Bluesky profile"
