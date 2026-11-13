@@ -6,7 +6,6 @@ banner: './banners/how-i-set-up-a-custom-domain-for-my-blog.png'
 categories: ['Astro', 'DNS', 'GitHub Pages', 'Web Development']
 ---
 
-import Interactive from '../components/Interactive.astro'
 import { DomainRegistrationFlow } from './components/domain-registration-flow'
 
 I'm building my own blog with [Astro](https://astro.build), hosted as static pages on [GitHub Pages](https://docs.astro.build/en/guides/deploy/github/). At some point "filip-melka.github.io/blog" stops feeling like a real address, so I went and got my own domain. Here's the whole process, start to finish.
@@ -53,12 +52,7 @@ The registry holds the authoritative master database for its TLD (who owns what,
 
 A **registrar** is the company you actually buy a domain from (GoDaddy, Namecheap, Cloudflare, etc.), accredited by ICANN and by each registry to sell and manage domain names. When you register `example.com`, your registrar submits that registration to the `.com` registry, which adds it to the master database. Once that's done, you become the **registrant** - the person or organization that owns the domain.
 
-<Interactive
-  fallback="./fallbacks/buying-domain-diagram.png"
-  caption="You buy a domain from a registrar, which registers it with the registry that owns the TLD."
->
-  <DomainRegistrationFlow />
-</Interactive>
+<DomainRegistrationFlow />
 
 But when someone types your domain into a browser, how does the browser know where to send the request? That's DNS's job.
 

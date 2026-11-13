@@ -7,7 +7,6 @@ categories:
   ['Automation', 'GitHub Actions', 'Astro', 'Web Development', 'Bluesky']
 ---
 
-import Interactive from '../components/Interactive.astro'
 import { BlueskyAutomationFlow } from './components/bluesky-automation-flow'
 
 A couple of weeks ago, I started my own blog. Recently, I've also started using Bluesky, though so far only for reading - I hadn't posted anything myself. That gap felt like the perfect excuse for a small automation project. In this post, I'll walk through the system I built to auto-announce new articles on Bluesky, with no spreadsheet or database involved.
@@ -304,11 +303,6 @@ Here is the entire workflow:
 5. Builds a caption from frontmatter (or falls back to the defaults)
 6. Uploads the banner and posts a link card for anything left over
 
-<Interactive
-  fallback="./fallbacks/bluesky-automation-workflow.png"
-  caption="Deploy triggers the workflow, which checks its own feed, filters by date, builds a caption, and posts the link card."
->
-  <BlueskyAutomationFlow client:visible />
-</Interactive>
+<BlueskyAutomationFlow client:visible />
 
 The part I like most is that there's nothing to forget. I don't maintain a list of "posted" articles, I don't have to remember to trigger anything manually, and I don't write social copy unless I actually want something different from the default. I publish an article the way I always have, and a few minutes later, it just shows up on Bluesky.
