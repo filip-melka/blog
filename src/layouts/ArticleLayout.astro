@@ -1,14 +1,19 @@
 ---
 import { Image } from 'astro:assets'
 import BaseLayout from './BaseLayout.astro'
+import GitHubIcon from '../components/GitHubIcon.astro'
+import { buildIssueUrl } from '../lib/github-issue'
 
-const { title, pubDate, minutesRead, banner, description } = Astro.props
+const { title, pubDate, minutesRead, banner, description, slug, filePath } =
+  Astro.props
 
 const formattedPubDate = pubDate.toLocaleDateString('en-GB', {
   day: 'numeric',
   month: 'long',
   year: 'numeric',
 })
+
+const issueUrl = buildIssueUrl({ title, slug, filePath })
 ---
 
 <BaseLayout title={`${title}`} image={banner} description={description}>
@@ -25,6 +30,25 @@ const formattedPubDate = pubDate.toLocaleDateString('en-GB', {
       <article class="prose mt-8 max-w-none">
         <slot />
       </article>
+      <aside
+        class="border-text/15 mt-16 flex flex-col gap-4 rounded-lg border p-5 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <div class="flex gap-3">
+          <GitHubIcon size={22} class="mt-0.5 shrink-0" />
+          <div>
+            <p class="font-medium">Spotted a mistake or something unclear?</p>
+            <p class="text-text/70 mt-1 text-sm">Open an issue on GitHub.</p>
+          </div>
+        </div>
+        <a
+          href={issueUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="bg-text text-bg shrink-0 self-start rounded-md px-4 py-2 text-sm font-medium transition-opacity hover:opacity-85 sm:self-auto"
+        >
+          Report an issue
+        </a>
+      </aside>
     </div>
   </main>
 </BaseLayout>

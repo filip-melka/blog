@@ -21,6 +21,8 @@ const { Content, remarkPluginFrontmatter } = await render(article)
   minutesRead={remarkPluginFrontmatter.minutesRead}
   banner={article.data.banner}
   description={article.data.description}
+  slug={article.id}
+  filePath={article.filePath}
 >
   <Content />
 </ArticleLayout>
